@@ -20,7 +20,7 @@ resource "helm_release" "victoria_metrics" {
     value = var.victoria_metrics["name"]
   }
 
-  # depends_on = [
-  #   helm_release.victoria_metrics
-  # ]
+  depends_on = [
+    helm_release.kube_prometheus_stack
+  ]
 }

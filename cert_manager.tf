@@ -1,5 +1,5 @@
 locals {
-  cert_manager_enabled = module.this.enabled && contains(var.apps_to_install, "cert-manager")
+  cert_manager_enabled = module.this.enabled && contains(var.apps_to_install, "cert_manager")
 }
 
 resource "helm_release" "cert_manager" {
@@ -21,6 +21,6 @@ resource "helm_release" "cert_manager" {
   }
 
   depends_on = [
-    helm_release.victoria_metrics
+    helm_release.kube_prometheus_stack
   ]
 }

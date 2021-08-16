@@ -13,7 +13,7 @@ module "cluster_autoscaler_label" {
 
 module "cluster_autoscaler_eks_iam_policy" {
   source  = "cloudposse/iam-policy/aws"
-  version = "0.1.0"
+  version = "0.2.1"
 
   iam_policy_statements = [
     {
@@ -40,8 +40,8 @@ module "cluster_autoscaler_eks_iam_role" {
   version = "0.10.0"
 
   aws_iam_policy_document     = module.cluster_autoscaler_eks_iam_policy.json
-  aws_partition               = one(data.aws_partition.current[*].partition)
-  eks_cluster_oidc_issuer_url = var.eks_cluster_oidc_issuer_url #change me
+  aws_partition               = one(data.aws_partition.default[*].partition)
+  eks_cluster_oidc_issuer_url = one(data.aws_eks_cluster.default[*].identity[0].oidc[0].issuer)
   service_account_name        = var.cluster_autoscaler["name"]
   service_account_namespace   = var.cluster_autoscaler["namespace"]
 
@@ -67,12 +67,27 @@ resource "helm_release" "cluster_autoscaler" {
   }
 
   set {
+    name  = "cloudProvider"
+    value = "aws"
+  }
+
+  set {
+    name  = "awsRegion"
+    value = one(data.aws_region.default[*].name)
+  }
+
+  set {
+    name  = "autoDiscovery.clusterName"
+    value = one(data.aws_eks_cluster.default[*].id)
+  }
+
+  set {
     name  = "rbac.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
     value = module.cluster_autoscaler_eks_iam_role.service_account_role_arn
   }
 
   depends_on = [
-    helm_release.victoria_metrics,
+    helm_release.kube_prometheus_stack,
     module.cluster_autoscaler_eks_iam_role
   ]
 }

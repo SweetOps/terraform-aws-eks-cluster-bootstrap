@@ -1,5 +1,12 @@
 locals {
   aws_node_termination_handler_enabled = module.this.enabled && contains(var.apps_to_install, "aws_node_termination_handler")
+  aws_node_termination_handler = defaults(var.aws_node_termination_handler, {
+    max_history       = 10
+    create_namespace  = true
+    dependency_update = true
+    reuse_values      = true
+    timeout           = 300
+  })
 }
 
 resource "helm_release" "aws_node_termination_handler" {

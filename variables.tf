@@ -166,21 +166,21 @@ variable "aws_node_termination_handler" {
     chart             = string
     version           = string
     namespace         = string
-    max_history       = number
-    create_namespace  = bool
-    dependency_update = bool
-    values            = list(any)
+    max_history       = optional(number)
+    create_namespace  = optional(bool)
+    dependency_update = optional(bool)
+    reuse_values      = optional(bool)
+    wait              = optional(bool)
+    values            = optional(list(string))
+    timeout           = optional(number)
   })
   default = {
-    chart             = "aws-node-termination-handler"
-    create_namespace  = true
-    dependency_update = true
-    max_history       = 10
-    name              = "aws-node-termination-handler"
-    namespace         = "kube-system"
-    repository        = "https://aws.github.io/eks-charts"
-    values            = []
-    version           = "0.15.2"
+    chart      = "aws-node-termination-handler"
+    name       = "aws-node-termination-handler"
+    namespace  = "kube-system"
+    repository = "https://aws.github.io/eks-charts"
+    values     = []
+    version    = "0.15.2"
   }
 }
 

@@ -1,7 +1,44 @@
 locals {
-  ebs_csi_driver_enabled        = module.this.enabled && contains(var.apps_to_install, "ebs_csi_driver")
-  ebs_csi_driver_values         = length(var.ebs_csi_driver["values"]) > 0 ? var.ebs_csi_driver["values"] : [yamlencode(local.ebs_csi_driver_default_values)]
-  ebs_csi_driver_default_values = ""
+  ebs_csi_driver_enabled = module.this.enabled && contains(var.apps_to_install, "ebs_csi_driver")
+  ebs_csi_driver_values  = length(var.ebs_csi_driver["values"]) > 0 ? var.ebs_csi_driver["values"] : [yamlencode(local.ebs_csi_driver_default_values)]
+  ebs_csi_driver_default_values = {
+    "controller" = {
+      "extraCreateMetadata" = true
+      "k8sTagClusterId"     = "${one(data.aws_eks_cluster.default[*].id)}"
+      "region"              = "${one(data.aws_region.default[*].name)}"
+      "tolerateAllTaints"   = true
+      "updateStrategy" = {
+        "rollingUpdate" = {
+          "maxSurge"       = 0
+          "maxUnavailable" = 1
+        }
+        "type" = "RollingUpdate"
+      }
+    }
+    "enableVolumeResizing" = true
+    "enableVolumeSnapshot" = true
+    "storageClasses" = [
+      {
+        "allowVolumeExpansion" = true
+        "annotations" = {
+          "storageclass.kubernetes.io/is-default-class" = "true"
+        }
+        "labels" = {
+          "type" = "gp3"
+        }
+        "name" = "ebs-gp3"
+        "parameters" = {
+          "csi.storage.k8s.io/fstype" = "xfs"
+          "encrypted"                 = "true"
+          "kmsKeyId"                  = "${module.ebs_csi_driver_kms_key.key_id}"
+          "type"                      = "gp3"
+        }
+        "provisioner"       = "ebs.csi.aws.com"
+        "reclaimPolicy"     = "Delete"
+        "volumeBindingMode" = "WaitForFirstConsumer"
+      },
+    ]
+  }
 }
 
 module "ebs_csi_driver_label" {
@@ -29,7 +66,6 @@ data "aws_iam_policy_document" "ebs_csi_driver" {
   count = local.ebs_csi_driver_enabled ? 1 : 0
 
   statement {
-    sid       = ""
     effect    = "Allow"
     resources = ["*"]
 
@@ -48,7 +84,6 @@ data "aws_iam_policy_document" "ebs_csi_driver" {
   }
 
   statement {
-    sid    = ""
     effect = "Allow"
 
     resources = [
@@ -70,7 +105,6 @@ data "aws_iam_policy_document" "ebs_csi_driver" {
   }
 
   statement {
-    sid    = ""
     effect = "Allow"
 
     resources = [
@@ -233,7 +267,7 @@ resource "helm_release" "ebs_csi_driver" {
   max_history       = var.ebs_csi_driver["max_history"]
   create_namespace  = var.ebs_csi_driver["create_namespace"]
   dependency_update = var.ebs_csi_driver["dependency_update"]
-  values            = var.ebs_csi_driver["values"]
+  values            = local.ebs_csi_driver_values
 
   set {
     name  = "fullnameOverride"
@@ -257,6 +291,7 @@ resource "helm_release" "ebs_csi_driver" {
 
   depends_on = [
     helm_release.ebs_csi_driver,
-    module.ebs_csi_driver_eks_iam_role
+    module.ebs_csi_driver_eks_iam_role,
+    module.ebs_csi_driver_kms_key
   ]
 }

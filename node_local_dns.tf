@@ -1,5 +1,6 @@
 locals {
   node_local_dns_enabled = module.this.enabled && contains(var.apps_to_install, "node_local_dns")
+  node_local_dns         = defaults(var.node_local_dns, local.helm_default_params)
   node_local_dns_values  = length(var.node_local_dns["values"]) > 0 ? var.node_local_dns["values"] : [yamlencode(local.node_local_dns_default_values)]
   node_local_dns_default_values = {
     "Corefile" = <<-EOT
@@ -77,19 +78,22 @@ output "kube_dns_ip" {
 resource "helm_release" "node_local_dns" {
   count = local.node_local_dns_enabled ? 1 : 0
 
-  name              = var.node_local_dns["name"]
-  repository        = var.node_local_dns["repository"]
-  chart             = var.node_local_dns["chart"]
-  version           = var.node_local_dns["version"]
-  namespace         = var.node_local_dns["namespace"]
-  max_history       = var.node_local_dns["max_history"]
-  create_namespace  = var.node_local_dns["create_namespace"]
-  dependency_update = var.node_local_dns["dependency_update"]
+  name              = local.node_local_dns["name"]
+  repository        = local.node_local_dns["repository"]
+  chart             = local.node_local_dns["chart"]
+  version           = local.node_local_dns["version"]
+  namespace         = local.node_local_dns["namespace"]
+  max_history       = local.node_local_dns["max_history"]
+  create_namespace  = local.node_local_dns["create_namespace"]
+  dependency_update = local.node_local_dns["dependency_update"]
+  reuse_values      = local.node_local_dns["reuse_values"]
+  wait              = local.node_local_dns["wait"]
+  timeout           = local.node_local_dns["timeout"]
   values            = local.node_local_dns_values
 
   set {
     name  = "fullnameOverride"
-    value = var.node_local_dns["name"]
+    value = local.node_local_dns["name"]
   }
 
   depends_on = [

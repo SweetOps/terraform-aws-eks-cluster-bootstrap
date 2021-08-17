@@ -1,3 +1,13 @@
+locals {
+  helm_default_params = {
+    max_history       = 10
+    create_namespace  = true
+    dependency_update = true
+    reuse_values      = true
+    timeout           = 300
+  }
+}
+
 data "aws_partition" "default" {
   count = module.this.enabled ? 1 : 0
 }

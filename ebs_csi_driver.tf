@@ -1,6 +1,7 @@
 locals {
   ebs_csi_driver_enabled = module.this.enabled && contains(var.apps_to_install, "ebs_csi_driver")
-  ebs_csi_driver_values  = length(var.ebs_csi_driver["values"]) > 0 ? var.ebs_csi_driver["values"] : [yamlencode(local.ebs_csi_driver_default_values)]
+  ebs_csi_driver         = defaults(var.ebs_csi_driver, local.helm_default_params)
+  ebs_csi_driver_values  = length(local.ebs_csi_driver["values"]) > 0 ? local.ebs_csi_driver["values"] : [yamlencode(local.ebs_csi_driver_default_values)]
   ebs_csi_driver_default_values = {
     "controller" = {
       "extraCreateMetadata" = true
@@ -250,8 +251,8 @@ module "ebs_csi_driver_eks_iam_role" {
   aws_iam_policy_document     = one(data.aws_iam_policy_document.ebs_csi_driver[*].json)
   aws_partition               = one(data.aws_partition.default[*].partition)
   eks_cluster_oidc_issuer_url = one(data.aws_eks_cluster.default[*].identity[0].oidc[0].issuer)
-  service_account_name        = var.ebs_csi_driver["name"]
-  service_account_namespace   = var.ebs_csi_driver["namespace"]
+  service_account_name        = local.ebs_csi_driver["name"]
+  service_account_namespace   = local.ebs_csi_driver["namespace"]
 
   context = module.ebs_csi_driver_label.context
 }
@@ -259,19 +260,22 @@ module "ebs_csi_driver_eks_iam_role" {
 resource "helm_release" "ebs_csi_driver" {
   count = local.ebs_csi_driver_enabled ? 1 : 0
 
-  name              = var.ebs_csi_driver["name"]
-  repository        = var.ebs_csi_driver["repository"]
-  chart             = var.ebs_csi_driver["chart"]
-  version           = var.ebs_csi_driver["version"]
-  namespace         = var.ebs_csi_driver["namespace"]
-  max_history       = var.ebs_csi_driver["max_history"]
-  create_namespace  = var.ebs_csi_driver["create_namespace"]
-  dependency_update = var.ebs_csi_driver["dependency_update"]
+  name              = local.ebs_csi_driver["name"]
+  repository        = local.ebs_csi_driver["repository"]
+  chart             = local.ebs_csi_driver["chart"]
+  version           = local.ebs_csi_driver["version"]
+  namespace         = local.ebs_csi_driver["namespace"]
+  max_history       = local.ebs_csi_driver["max_history"]
+  create_namespace  = local.ebs_csi_driver["create_namespace"]
+  dependency_update = local.ebs_csi_driver["dependency_update"]
+  reuse_values      = local.ebs_csi_driver["reuse_values"]
+  wait              = local.ebs_csi_driver["wait"]
+  timeout           = local.ebs_csi_driver["timeout"]
   values            = local.ebs_csi_driver_values
 
   set {
     name  = "fullnameOverride"
-    value = var.ebs_csi_driver["name"]
+    value = local.ebs_csi_driver["name"]
   }
 
   set {

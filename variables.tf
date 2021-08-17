@@ -16,11 +16,15 @@ variable "cert_manager" {
     chart             = string
     version           = string
     namespace         = string
-    max_history       = number
-    create_namespace  = bool
-    dependency_update = bool
     values            = list(any)
+    max_history       = optional(number)
+    create_namespace  = optional(bool)
+    dependency_update = optional(bool)
+    reuse_values      = optional(bool)
+    wait              = optional(bool)
+    timeout           = optional(number)
   })
+
   default = {
     chart             = "cert-manager"
     create_namespace  = true
@@ -41,11 +45,15 @@ variable "victoria_metrics" {
     chart             = string
     version           = string
     namespace         = string
-    max_history       = number
-    create_namespace  = bool
-    dependency_update = bool
     values            = list(any)
+    max_history       = optional(number)
+    create_namespace  = optional(bool)
+    dependency_update = optional(bool)
+    reuse_values      = optional(bool)
+    wait              = optional(bool)
+    timeout           = optional(number)
   })
+
   default = {
     chart             = "victoria-metrics-k8s-stack"
     create_namespace  = true
@@ -66,11 +74,15 @@ variable "cluster_autoscaler" {
     chart             = string
     version           = string
     namespace         = string
-    max_history       = number
-    create_namespace  = bool
-    dependency_update = bool
     values            = list(any)
+    max_history       = optional(number)
+    create_namespace  = optional(bool)
+    dependency_update = optional(bool)
+    reuse_values      = optional(bool)
+    wait              = optional(bool)
+    timeout           = optional(number)
   })
+
   default = {
     chart             = "cluster-autoscaler"
     create_namespace  = true
@@ -91,11 +103,15 @@ variable "ebs_csi_driver" {
     chart             = string
     version           = string
     namespace         = string
-    max_history       = number
-    create_namespace  = bool
-    dependency_update = bool
     values            = list(any)
+    max_history       = optional(number)
+    create_namespace  = optional(bool)
+    dependency_update = optional(bool)
+    reuse_values      = optional(bool)
+    wait              = optional(bool)
+    timeout           = optional(number)
   })
+
   default = {
     chart             = "ebs-csi-driver"
     create_namespace  = true
@@ -116,11 +132,15 @@ variable "node_local_dns" {
     chart             = string
     version           = string
     namespace         = string
-    max_history       = number
-    create_namespace  = bool
-    dependency_update = bool
     values            = list(any)
+    max_history       = optional(number)
+    create_namespace  = optional(bool)
+    dependency_update = optional(bool)
+    reuse_values      = optional(bool)
+    wait              = optional(bool)
+    timeout           = optional(number)
   })
+
   default = {
     chart             = "node-local-dns"
     create_namespace  = true
@@ -141,11 +161,15 @@ variable "kube_prometheus_stack" {
     chart             = string
     version           = string
     namespace         = string
-    max_history       = number
-    create_namespace  = bool
-    dependency_update = bool
     values            = list(any)
+    max_history       = optional(number)
+    create_namespace  = optional(bool)
+    dependency_update = optional(bool)
+    reuse_values      = optional(bool)
+    wait              = optional(bool)
+    timeout           = optional(number)
   })
+
   default = {
     chart             = "kube-prometheus-stack"
     create_namespace  = true
@@ -166,14 +190,15 @@ variable "aws_node_termination_handler" {
     chart             = string
     version           = string
     namespace         = string
+    values            = list(any)
     max_history       = optional(number)
     create_namespace  = optional(bool)
     dependency_update = optional(bool)
     reuse_values      = optional(bool)
     wait              = optional(bool)
-    values            = optional(list(string))
     timeout           = optional(number)
   })
+
   default = {
     chart      = "aws-node-termination-handler"
     name       = "aws-node-termination-handler"
@@ -191,11 +216,15 @@ variable "external_dns" {
     chart             = string
     version           = string
     namespace         = string
-    max_history       = number
-    create_namespace  = bool
-    dependency_update = bool
     values            = list(any)
+    max_history       = optional(number)
+    create_namespace  = optional(bool)
+    dependency_update = optional(bool)
+    reuse_values      = optional(bool)
+    wait              = optional(bool)
+    timeout           = optional(number)
   })
+
   default = {
     chart             = "external-dns"
     create_namespace  = true
@@ -216,11 +245,15 @@ variable "ingress_nginx" {
     chart             = string
     version           = string
     namespace         = string
-    max_history       = number
-    create_namespace  = bool
-    dependency_update = bool
     values            = list(any)
+    max_history       = optional(number)
+    create_namespace  = optional(bool)
+    dependency_update = optional(bool)
+    reuse_values      = optional(bool)
+    wait              = optional(bool)
+    timeout           = optional(number)
   })
+
   default = {
     chart             = "ingress-nginx"
     create_namespace  = true

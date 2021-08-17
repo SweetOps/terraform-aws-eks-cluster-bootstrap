@@ -1,23 +1,27 @@
 locals {
   external_dns_enabled = module.this.enabled && contains(var.apps_to_install, "external_dns")
+  external_dns         = defaults(var.external_dns, local.helm_default_params)
 }
 
 resource "helm_release" "external_dns" {
   count = local.external_dns_enabled ? 1 : 0
 
-  name              = var.external_dns["name"]
-  repository        = var.external_dns["repository"]
-  chart             = var.external_dns["chart"]
-  version           = var.external_dns["version"]
-  namespace         = var.external_dns["namespace"]
-  max_history       = var.external_dns["max_history"]
-  create_namespace  = var.external_dns["create_namespace"]
-  dependency_update = var.external_dns["dependency_update"]
-  values            = var.external_dns["values"]
+  name              = local.external_dns["name"]
+  repository        = local.external_dns["repository"]
+  chart             = local.external_dns["chart"]
+  version           = local.external_dns["version"]
+  namespace         = local.external_dns["namespace"]
+  max_history       = local.external_dns["max_history"]
+  create_namespace  = local.external_dns["create_namespace"]
+  dependency_update = local.external_dns["dependency_update"]
+  reuse_values      = local.external_dns["reuse_values"]
+  wait              = local.external_dns["wait"]
+  timeout           = local.external_dns["timeout"]
+  values            = local.external_dns["values"]
 
   set {
     name  = "fullnameOverride"
-    value = var.external_dns["name"]
+    value = local.external_dns["name"]
   }
 
   set {

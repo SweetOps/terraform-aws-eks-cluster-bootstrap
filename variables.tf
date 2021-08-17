@@ -1,6 +1,6 @@
 variable "apps_to_install" {
   type        = list(string)
-  default     = ["cert_manager", "cluster_autoscaler", "victoria_metrics"]
+  default     = ["cert_manager", "cluster_autoscaler", "victoria_metrics", "ebs_csi_driver", "node_local_dns", "kube_prometheus_stack", "aws_node_termination_handler", "external_dns", "ingress_nginx"]
   description = "A list of apps which will be installed"
 }
 

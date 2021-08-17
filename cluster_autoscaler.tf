@@ -13,7 +13,7 @@ module "cluster_autoscaler_label" {
 
 module "cluster_autoscaler_eks_iam_policy" {
   source  = "cloudposse/iam-policy/aws"
-  version = "0.2.1"
+  version = "0.1.0"
 
   iam_policy_statements = [
     {
@@ -88,6 +88,7 @@ resource "helm_release" "cluster_autoscaler" {
 
   depends_on = [
     helm_release.kube_prometheus_stack,
+    helm_release.node_local_dns,
     module.cluster_autoscaler_eks_iam_role
   ]
 }

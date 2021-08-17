@@ -158,3 +158,78 @@ variable "kube_prometheus_stack" {
     version           = "17.2.2"
   }
 }
+
+variable "aws_node_termination_handler" {
+  type = object({
+    name              = string
+    repository        = string
+    chart             = string
+    version           = string
+    namespace         = string
+    max_history       = number
+    create_namespace  = bool
+    dependency_update = bool
+    values            = list(any)
+  })
+  default = {
+    chart             = "aws-node-termination-handler"
+    create_namespace  = true
+    dependency_update = true
+    max_history       = 10
+    name              = "aws-node-termination-handler"
+    namespace         = "kube-system"
+    repository        = "https://aws.github.io/eks-charts"
+    values            = []
+    version           = "0.15.2"
+  }
+}
+
+variable "external_dns" {
+  type = object({
+    name              = string
+    repository        = string
+    chart             = string
+    version           = string
+    namespace         = string
+    max_history       = number
+    create_namespace  = bool
+    dependency_update = bool
+    values            = list(any)
+  })
+  default = {
+    chart             = "external-dns"
+    create_namespace  = true
+    dependency_update = true
+    max_history       = 10
+    name              = "external-dns"
+    namespace         = "infra"
+    repository        = "https://charts.bitnami.com/bitnami"
+    values            = []
+    version           = "1.1.2"
+  }
+}
+
+variable "ingress_nginx" {
+  type = object({
+    name              = string
+    repository        = string
+    chart             = string
+    version           = string
+    namespace         = string
+    max_history       = number
+    create_namespace  = bool
+    dependency_update = bool
+    values            = list(any)
+  })
+  default = {
+    chart             = "ingress-nginx"
+    create_namespace  = true
+    dependency_update = true
+    max_history       = 10
+    name              = "ingress-nginx"
+    namespace         = "infra"
+    repository        = "https://kubernetes.github.io/ingress-nginx"
+    values            = []
+    version           = "3.35.0"
+  }
+}

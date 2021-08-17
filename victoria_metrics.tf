@@ -21,6 +21,11 @@ resource "helm_release" "victoria_metrics" {
   }
 
   depends_on = [
-    helm_release.kube_prometheus_stack
+    helm_release.kube_prometheus_stack,
+    helm_release.ebs_csi_driver,
+    helm_release.cert_manager,
+    helm_release.external_dns,
+    helm_release.ingress_nginx,
+    helm_release.node_local_dns
   ]
 }

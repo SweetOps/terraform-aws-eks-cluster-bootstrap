@@ -6,40 +6,34 @@ module "cluster_autoscaler_label" {
   source  = "cloudposse/label/null"
   version = "0.24.1"
 
-  enabled    = local.cluster_autoscaler_enabled
-  attributes = ["cluster", "autoscaler"]
-  context    = module.this.context
+  enabled = local.cluster_autoscaler_enabled
+  context = module.this.context
 }
 
-module "cluster_autoscaler_eks_iam_policy" {
-  source  = "cloudposse/iam-policy/aws"
-  version = "0.1.0"
+data "aws_iam_policy_document" "cluster_autoscaler" {
+  # count = local.cluster_autoscaler_enabled ? 1 : 0
 
-  iam_policy_statements = [
-    {
-      sid    = "ClusterAutoscaler"
-      effect = "Allow"
-      actions = [
-        "autoscaling:DescribeAutoScalingGroups",
-        "autoscaling:DescribeAutoScalingInstances",
-        "autoscaling:DescribeLaunchConfigurations",
-        "autoscaling:DescribeTags",
-        "autoscaling:SetDesiredCapacity",
-        "autoscaling:TerminateInstanceInAutoScalingGroup",
-        "ec2:DescribeLaunchTemplateVersions"
-      ]
-      resources = ["*"]
-    }
-  ]
+  statement {
+    sid       = "ClusterAutoscaler"
+    effect    = "Allow"
+    resources = ["*"]
 
-  context = module.cluster_autoscaler_label.context
+    actions = [
+      "autoscaling:DescribeAutoScalingGroups",
+      "autoscaling:DescribeAutoScalingInstances",
+      "autoscaling:DescribeLaunchConfigurations",
+      "autoscaling:DescribeTags",
+      "autoscaling:SetDesiredCapacity",
+      "autoscaling:TerminateInstanceInAutoScalingGroup",
+      "ec2:DescribeLaunchTemplateVersions"
+    ]
+  }
 }
 
 module "cluster_autoscaler_eks_iam_role" {
-  source  = "cloudposse/eks-iam-role/aws"
-  version = "0.10.0"
+  source = "git::https://github.com/SweetOps/terraform-aws-eks-iam-role.git?ref=switch_to_count"
 
-  aws_iam_policy_document     = module.cluster_autoscaler_eks_iam_policy.json
+  aws_iam_policy_document     = one(data.aws_iam_policy_document.cluster_autoscaler[*].json)
   aws_partition               = one(data.aws_partition.default[*].partition)
   eks_cluster_oidc_issuer_url = one(data.aws_eks_cluster.default[*].identity[0].oidc[0].issuer)
   service_account_name        = var.cluster_autoscaler["name"]

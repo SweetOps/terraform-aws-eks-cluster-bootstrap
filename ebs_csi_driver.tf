@@ -46,9 +46,8 @@ module "ebs_csi_driver_label" {
   source  = "cloudposse/label/null"
   version = "0.24.1"
 
-  enabled    = local.ebs_csi_driver_enabled
-  attributes = ["ebs", "csi", "driver"]
-  context    = module.this.context
+  enabled = local.ebs_csi_driver_enabled
+  context = module.this.context
 }
 
 module "ebs_csi_driver_kms_key" {
@@ -60,7 +59,8 @@ module "ebs_csi_driver_kms_key" {
   enable_key_rotation     = true
   alias                   = format("alias/%s/ebs-csi-driver", one(data.aws_eks_cluster.default[*].id))
 
-  context = module.ebs_csi_driver_label.context
+  context    = module.ebs_csi_driver_label.context
+  attributes = ["ebs", "csi", "driver"]
 }
 
 data "aws_iam_policy_document" "ebs_csi_driver" {
@@ -245,8 +245,7 @@ data "aws_iam_policy_document" "ebs_csi_driver" {
 }
 
 module "ebs_csi_driver_eks_iam_role" {
-  source  = "cloudposse/eks-iam-role/aws"
-  version = "0.10.0"
+  source = "git::https://github.com/SweetOps/terraform-aws-eks-iam-role.git?ref=switch_to_count"
 
   aws_iam_policy_document     = one(data.aws_iam_policy_document.ebs_csi_driver[*].json)
   aws_partition               = one(data.aws_partition.default[*].partition)
@@ -294,7 +293,6 @@ resource "helm_release" "ebs_csi_driver" {
   }
 
   depends_on = [
-    helm_release.ebs_csi_driver,
     module.ebs_csi_driver_eks_iam_role,
     module.ebs_csi_driver_kms_key
   ]

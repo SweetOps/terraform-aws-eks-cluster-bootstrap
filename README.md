@@ -1,18 +1,11 @@
-# terraform-module-template
+# terraform-aws-eks-cluster-bootstrap
 ![](https://github.com/actions/hello-world/workflows/.github/workflows/main.yml/badge.svg)
 
-Terraform module for creation **CHAMGE_ME** with normalized name and tags.
+Terraform module to deploy curated helm releases on EKS cluster.
+
+NOTE: This module is under heavy development
 
 ## Usage
-
-```hcl
-module "your_aweasome_resource" {
-  source    = ""
-  namespace = "sweetops"
-  stage     = "production"
-  name      = "aweasome"
-}
-```
 
 <!--- BEGIN_TF_DOCS --->
 ## Requirements

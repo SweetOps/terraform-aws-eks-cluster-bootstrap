@@ -3,7 +3,7 @@
 
 Terraform module to deploy curated helm releases on EKS cluster.
 
-NOTE: This module is under heavy development
+NOTE: This module is under heavy development.
 
 ## Usage
 

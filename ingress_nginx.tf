@@ -1,6 +1,24 @@
 locals {
   ingress_nginx_enabled = module.this.enabled && contains(var.apps_to_install, "ingress_nginx")
-  ingress_nginx         = defaults(var.ingress_nginx, local.helm_default_params)
+  ingress_nginx_helm_default_params = {
+    repository      = "https://kubernetes.github.io/ingress-nginx"
+    chart           = "ingress-nginx"
+    version         = "4.0.1"
+    override_values = ""
+  }
+  ingress_nginx_helm_default_values = {
+    "fullnameOverride" = "${local.ingress_nginx["name"]}"
+  }
+  ingress_nginx = defaults(var.ingress_nginx, merge(local.helm_default_params, local.ingress_nginx_helm_default_params))
+}
+
+data "utils_deep_merge_yaml" "ingress_nginx" {
+  count = local.ingress_nginx_enabled ? 1 : 0
+
+  input = [
+    yamlencode(local.ingress_nginx_helm_default_values),
+    local.ingress_nginx["override_values"]
+  ]
 }
 
 resource "helm_release" "ingress_nginx" {
@@ -17,17 +35,12 @@ resource "helm_release" "ingress_nginx" {
   reuse_values      = local.ingress_nginx["reuse_values"]
   wait              = local.ingress_nginx["wait"]
   timeout           = local.ingress_nginx["timeout"]
-  values            = local.ingress_nginx["values"]
-
-  set {
-    name  = "fullnameOverride"
-    value = local.ingress_nginx["name"]
-  }
+  values            = [one(data.utils_deep_merge_yaml.ingress_nginx[*].output)]
 
   depends_on = [
     helm_release.node_local_dns,
     helm_release.cert_manager,
-    helm_release.external_dns,
-    helm_release.kube_prometheus_stack
+    helm_release.kube_prometheus_stack,
+    helm_release.external_dns
   ]
 }

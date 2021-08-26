@@ -1,5 +1,36 @@
 locals {
   cluster_autoscaler_enabled = module.this.enabled && contains(var.apps_to_install, "cluster_autoscaler")
+  cluster_autoscaler         = defaults(var.cluster_autoscaler, merge(local.helm_default_params, local.cluster_autoscaler_helm_default_params))
+  cluster_autoscaler_helm_default_params = {
+    repository      = "https://kubernetes.github.io/autoscaler"
+    chart           = "cluster-autoscaler"
+    version         = "9.7.0"
+    override_values = ""
+  }
+  cluster_autoscaler_helm_default_values = {
+    "fullnameOverride" = "${local.cluster_autoscaler["name"]}"
+    "cloudProvider"    = "aws"
+    "awsRegion"        = "${local.region}"
+    "autoDiscovery" = {
+      "clusterName" = "${local.eks_cluster_id}"
+    }
+    "rbac" = {
+      "serviceAccount" = {
+        "annotations" = {
+          "eks.amazonaws.com/role-arn" = "${module.cluster_autoscaler_eks_iam_role.service_account_role_arn}"
+        }
+      }
+    }
+  }
+}
+
+data "utils_deep_merge_yaml" "cluster_autoscaler" {
+  count = local.cluster_autoscaler_enabled ? 1 : 0
+
+  input = [
+    yamlencode(local.cluster_autoscaler_helm_default_values),
+    local.cluster_autoscaler["override_values"]
+  ]
 }
 
 module "cluster_autoscaler_label" {
@@ -11,7 +42,7 @@ module "cluster_autoscaler_label" {
 }
 
 data "aws_iam_policy_document" "cluster_autoscaler" {
-  # count = local.cluster_autoscaler_enabled ? 1 : 0
+  count = local.cluster_autoscaler_enabled ? 1 : 0
 
   statement {
     sid       = "ClusterAutoscaler"
@@ -34,8 +65,8 @@ module "cluster_autoscaler_eks_iam_role" {
   source = "git::https://github.com/SweetOps/terraform-aws-eks-iam-role.git?ref=switch_to_count"
 
   aws_iam_policy_document     = one(data.aws_iam_policy_document.cluster_autoscaler[*].json)
-  aws_partition               = one(data.aws_partition.default[*].partition)
-  eks_cluster_oidc_issuer_url = one(data.aws_eks_cluster.default[*].identity[0].oidc[0].issuer)
+  aws_partition               = local.partition
+  eks_cluster_oidc_issuer_url = local.eks_cluster_oidc_issuer_url
   service_account_name        = var.cluster_autoscaler["name"]
   service_account_namespace   = var.cluster_autoscaler["namespace"]
 
@@ -53,32 +84,7 @@ resource "helm_release" "cluster_autoscaler" {
   max_history       = var.cluster_autoscaler["max_history"]
   create_namespace  = var.cluster_autoscaler["create_namespace"]
   dependency_update = var.cluster_autoscaler["dependency_update"]
-  values            = var.cluster_autoscaler["values"]
-
-  set {
-    name  = "fullnameOverride"
-    value = var.cluster_autoscaler["name"]
-  }
-
-  set {
-    name  = "cloudProvider"
-    value = "aws"
-  }
-
-  set {
-    name  = "awsRegion"
-    value = one(data.aws_region.default[*].name)
-  }
-
-  set {
-    name  = "autoDiscovery.clusterName"
-    value = one(data.aws_eks_cluster.default[*].id)
-  }
-
-  set {
-    name  = "rbac.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    value = module.cluster_autoscaler_eks_iam_role.service_account_role_arn
-  }
+  values            = [one(data.utils_deep_merge_yaml.cluster_autoscaler[*].output)]
 
   depends_on = [
     helm_release.kube_prometheus_stack,

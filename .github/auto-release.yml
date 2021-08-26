@@ -9,7 +9,7 @@ version-resolver:
     labels:
     - 'minor'
     - 'enhancement'
-    - 'feat'
+    # - 'feat'
   patch:
     labels:
     - 'auto-update'
@@ -24,7 +24,8 @@ version-resolver:
     - 'docs'
     - 'test'
     - 'chore'
-  default: 'minor'
+    - 'feat'
+  default: 'patch'
 
 categories:
 - title: '🚀 Enhancements'

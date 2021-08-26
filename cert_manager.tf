@@ -1,9 +1,43 @@
 locals {
-  cert_manager_enabled         = module.this.enabled && contains(var.apps_to_install, "cert_manager")
+  cert_manager_enabled = module.this.enabled && contains(var.apps_to_install, "cert_manager")
+  cert_manager_helm_default_params = {
+    chart           = "cert-manager"
+    repository      = "https://charts.jetstack.io"
+    version         = "1.5.0"
+    override_values = ""
+  }
+  cert_manager_helm_default_values = {
+    "fullnameOverride" = "${local.cert_manager["name"]}"
+    "installCRDs"      = true
+    "prometheus" = {
+      "enabled" = true
+      "servicemonitor" = {
+        "enabled" = true
+      }
+    }
+  }
+  cert_manager                 = defaults(var.cert_manager, merge(local.helm_default_params, local.cert_manager_helm_default_params))
   cert_manager_issuers_enabled = module.this.enabled && contains(var.apps_to_install, "cert_manager_issuers")
-  cert_manager                 = defaults(var.cert_manager, local.helm_default_params)
-  cert_manager_issuers         = defaults(var.cert_manager_issuers, local.helm_default_params)
 
+  cert_manager_issuers_helm_default_params = {
+    repository      = "https://charts.adfinis.com"
+    chart           = "cert-manager-issuers"
+    version         = "0.2.2"
+    override_values = ""
+  }
+  cert_manager_issuers_helm_default_values = {
+    "fullnameOverride" = "${local.cert_manager_issuers["name"]}"
+  }
+  cert_manager_issuers = defaults(var.cert_manager_issuers, merge(local.helm_default_params, local.cert_manager_helm_default_params))
+}
+
+data "utils_deep_merge_yaml" "cert_manager" {
+  count = local.cert_manager_enabled ? 1 : 0
+
+  input = [
+    yamlencode(local.cert_manager_helm_default_values),
+    local.cert_manager["override_values"]
+  ]
 }
 
 resource "helm_release" "cert_manager" {
@@ -20,16 +54,20 @@ resource "helm_release" "cert_manager" {
   reuse_values      = local.cert_manager["reuse_values"]
   wait              = local.cert_manager["wait"]
   timeout           = local.cert_manager["timeout"]
-  values            = local.cert_manager["values"]
-
-  set {
-    name  = "fullnameOverride"
-    value = local.cert_manager["name"]
-  }
+  values            = [one(data.utils_deep_merge_yaml.cert_manager[*].output)]
 
   depends_on = [
     helm_release.kube_prometheus_stack,
     helm_release.node_local_dns
+  ]
+}
+
+data "utils_deep_merge_yaml" "cert_manager_issuers" {
+  count = local.cert_manager_issuers_enabled ? 1 : 0
+
+  input = [
+    yamlencode(local.cert_manager_issuers_helm_default_values),
+    local.cert_manager_issuers["override_values"]
   ]
 }
 
@@ -47,12 +85,7 @@ resource "helm_release" "cert_manager_issuers" {
   reuse_values      = local.cert_manager_issuers["reuse_values"]
   wait              = local.cert_manager_issuers["wait"]
   timeout           = local.cert_manager_issuers["timeout"]
-  values            = local.cert_manager_issuers["values"]
-
-  set {
-    name  = "fullnameOverride"
-    value = local.cert_manager_issuers["name"]
-  }
+  values            = [one(data.utils_deep_merge_yaml.cert_manager_issuers[*].output)]
 
   depends_on = [
     helm_release.kube_prometheus_stack,

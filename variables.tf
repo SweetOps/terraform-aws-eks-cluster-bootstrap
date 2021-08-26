@@ -10,7 +10,11 @@ variable "apps_to_install" {
     "kube_prometheus_stack",
     "aws_node_termination_handler",
     "external_dns",
-    "ingress_nginx"
+    "ingress_nginx",
+    "vault",
+    "actions_runner_controller",
+    "velero",
+    "oauth2_proxy"
   ]
   description = "A list of apps which will be installed"
 }
@@ -23,11 +27,11 @@ variable "eks_cluster_id" {
 variable "cert_manager" {
   type = object({
     name              = string
-    repository        = string
-    chart             = string
-    version           = string
     namespace         = string
-    values            = list(any)
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
     max_history       = optional(number)
     create_namespace  = optional(bool)
     dependency_update = optional(bool)
@@ -37,23 +41,19 @@ variable "cert_manager" {
   })
 
   default = {
-    chart      = "cert-manager"
-    name       = "cert-manager"
-    namespace  = "cert-manager"
-    repository = "https://charts.jetstack.io"
-    values     = []
-    version    = "1.5.0"
+    name      = "cert-manager"
+    namespace = "cert-manager"
   }
 }
 
 variable "cert_manager_issuers" {
   type = object({
     name              = string
-    repository        = string
-    chart             = string
-    version           = string
     namespace         = string
-    values            = list(any)
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
     max_history       = optional(number)
     create_namespace  = optional(bool)
     dependency_update = optional(bool)
@@ -63,23 +63,19 @@ variable "cert_manager_issuers" {
   })
 
   default = {
-    chart      = "cert-manager-issuers"
-    name       = "cert-manager-issuers"
-    namespace  = "cert-manager"
-    repository = "https://charts.adfinis.com"
-    values     = []
-    version    = "0.2.2"
+    name      = "cert-manager-issuers"
+    namespace = "cert-manager"
   }
 }
 
 variable "victoria_metrics" {
   type = object({
     name              = string
-    repository        = string
-    chart             = string
-    version           = string
     namespace         = string
-    values            = list(any)
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
     max_history       = optional(number)
     create_namespace  = optional(bool)
     dependency_update = optional(bool)
@@ -89,23 +85,19 @@ variable "victoria_metrics" {
   })
 
   default = {
-    chart      = "victoria-metrics-k8s-stack"
-    name       = "monitoring"
-    namespace  = "monitoring"
-    repository = "https://victoriametrics.github.io/helm-charts"
-    values     = []
-    version    = "1.5.0"
+    name      = "monitoring"
+    namespace = "monitoring"
   }
 }
 
 variable "cluster_autoscaler" {
   type = object({
     name              = string
-    repository        = string
-    chart             = string
-    version           = string
     namespace         = string
-    values            = list(any)
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
     max_history       = optional(number)
     create_namespace  = optional(bool)
     dependency_update = optional(bool)
@@ -115,23 +107,19 @@ variable "cluster_autoscaler" {
   })
 
   default = {
-    chart      = "cluster-autoscaler"
-    name       = "cluster-autoscaler"
-    namespace  = "kube-system"
-    repository = "https://kubernetes.github.io/autoscaler"
-    values     = []
-    version    = "9.7.0"
+    name      = "cluster-autoscaler"
+    namespace = "kube-system"
   }
 }
 
 variable "ebs_csi_driver" {
   type = object({
     name              = string
-    repository        = string
-    chart             = string
-    version           = string
     namespace         = string
-    values            = list(any)
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
     max_history       = optional(number)
     create_namespace  = optional(bool)
     dependency_update = optional(bool)
@@ -141,23 +129,19 @@ variable "ebs_csi_driver" {
   })
 
   default = {
-    chart      = "ebs-csi-driver"
-    name       = "ebs-csi"
-    namespace  = "kube-system"
-    repository = "https://kubernetes-sigs.github.io/aws-ebs-csi-driver"
-    values     = []
-    version    = "2.1.0"
+    name      = "ebs-csi-driver"
+    namespace = "kube-system"
   }
 }
 
 variable "node_local_dns" {
   type = object({
     name              = string
-    repository        = string
-    chart             = string
-    version           = string
     namespace         = string
-    values            = list(any)
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
     max_history       = optional(number)
     create_namespace  = optional(bool)
     dependency_update = optional(bool)
@@ -167,23 +151,19 @@ variable "node_local_dns" {
   })
 
   default = {
-    chart      = "node-local-dns"
-    name       = "node-local-dns"
-    namespace  = "kube-system"
-    repository = "https://lablabs.github.io/k8s-nodelocaldns-helm/"
-    values     = []
-    version    = "1.3.2"
+    name      = "node-local-dns"
+    namespace = "kube-system"
   }
 }
 
 variable "kube_prometheus_stack" {
   type = object({
     name              = string
-    repository        = string
-    chart             = string
-    version           = string
     namespace         = string
-    values            = list(any)
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
     max_history       = optional(number)
     create_namespace  = optional(bool)
     dependency_update = optional(bool)
@@ -193,23 +173,19 @@ variable "kube_prometheus_stack" {
   })
 
   default = {
-    chart      = "kube-prometheus-stack"
-    name       = "kube-prometheus-stack"
-    namespace  = "monitoring"
-    repository = "https://prometheus-community.github.io/helm-charts"
-    values     = []
-    version    = "17.2.2"
+    name      = "kube-prometheus-stack"
+    namespace = "monitoring"
   }
 }
 
 variable "aws_node_termination_handler" {
   type = object({
     name              = string
-    repository        = string
-    chart             = string
-    version           = string
     namespace         = string
-    values            = list(any)
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
     max_history       = optional(number)
     create_namespace  = optional(bool)
     dependency_update = optional(bool)
@@ -219,23 +195,19 @@ variable "aws_node_termination_handler" {
   })
 
   default = {
-    chart      = "aws-node-termination-handler"
-    name       = "aws-node-termination-handler"
-    namespace  = "kube-system"
-    repository = "https://aws.github.io/eks-charts"
-    values     = []
-    version    = "0.15.2"
+    name      = "aws-node-termination-handler"
+    namespace = "kube-system"
   }
 }
 
 variable "external_dns" {
   type = object({
     name              = string
-    repository        = string
-    chart             = string
-    version           = string
     namespace         = string
-    values            = list(any)
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
     max_history       = optional(number)
     create_namespace  = optional(bool)
     dependency_update = optional(bool)
@@ -245,23 +217,19 @@ variable "external_dns" {
   })
 
   default = {
-    chart      = "external-dns"
-    name       = "external-dns"
-    namespace  = "infra"
-    repository = "https://charts.bitnami.com/bitnami"
-    values     = []
-    version    = "1.1.2"
+    name      = "external-dns"
+    namespace = "infra"
   }
 }
 
 variable "ingress_nginx" {
   type = object({
     name              = string
-    repository        = string
-    chart             = string
-    version           = string
     namespace         = string
-    values            = list(any)
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
     max_history       = optional(number)
     create_namespace  = optional(bool)
     dependency_update = optional(bool)
@@ -271,11 +239,95 @@ variable "ingress_nginx" {
   })
 
   default = {
-    chart      = "ingress-nginx"
-    name       = "ingress-nginx"
-    namespace  = "infra"
-    repository = "https://kubernetes.github.io/ingress-nginx"
-    values     = []
-    version    = "3.35.0"
+    name      = "ingress-nginx"
+    namespace = "infra"
+  }
+}
+
+variable "oauth2_proxy" {
+  type = object({
+    name              = string
+    namespace         = string
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
+    max_history       = optional(number)
+    create_namespace  = optional(bool)
+    dependency_update = optional(bool)
+    reuse_values      = optional(bool)
+    wait              = optional(bool)
+    timeout           = optional(number)
+  })
+
+  default = {
+    name      = "oauth2-proxy"
+    namespace = "infra"
+  }
+}
+
+variable "actions_runner_controller" {
+  type = object({
+    name              = string
+    namespace         = string
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
+    max_history       = optional(number)
+    create_namespace  = optional(bool)
+    dependency_update = optional(bool)
+    reuse_values      = optional(bool)
+    wait              = optional(bool)
+    timeout           = optional(number)
+  })
+
+  default = {
+    name      = "actions-runner-controller"
+    namespace = "cicd"
+  }
+}
+
+variable "velero" {
+  type = object({
+    name              = string
+    namespace         = string
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
+    max_history       = optional(number)
+    create_namespace  = optional(bool)
+    dependency_update = optional(bool)
+    reuse_values      = optional(bool)
+    wait              = optional(bool)
+    timeout           = optional(number)
+  })
+
+  default = {
+    name      = "velero"
+    namespace = "velero"
+  }
+}
+
+variable "vault" {
+  type = object({
+    name              = string
+    namespace         = string
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
+    max_history       = optional(number)
+    create_namespace  = optional(bool)
+    dependency_update = optional(bool)
+    reuse_values      = optional(bool)
+    wait              = optional(bool)
+    timeout           = optional(number)
+  })
+
+  default = {
+    name      = "vault"
+    namespace = "vault"
   }
 }

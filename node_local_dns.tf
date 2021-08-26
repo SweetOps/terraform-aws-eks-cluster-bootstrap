@@ -1,9 +1,15 @@
 locals {
   node_local_dns_enabled = module.this.enabled && contains(var.apps_to_install, "node_local_dns")
-  node_local_dns         = defaults(var.node_local_dns, local.helm_default_params)
-  node_local_dns_values  = length(var.node_local_dns["values"]) > 0 ? var.node_local_dns["values"] : [yamlencode(local.node_local_dns_default_values)]
-  node_local_dns_default_values = {
-    "Corefile" = <<-EOT
+  node_local_dns_helm_default_params = {
+    repository      = "https://lablabs.github.io/k8s-nodelocaldns-helm/"
+    chart           = "node-local-dns"
+    version         = "1.3.2"
+    override_values = ""
+  }
+  node_local_dns = defaults(var.node_local_dns, merge(local.helm_default_params, local.node_local_dns_helm_default_params))
+  node_local_dns_helm_default_values = {
+    "fullnameOverride" = "${local.node_local_dns["name"]}"
+    "Corefile"         = <<-EOT
   cluster.local:53 {
       errors
       cache {
@@ -62,6 +68,15 @@ locals {
   }
 }
 
+data "utils_deep_merge_yaml" "node_local_dns" {
+  count = local.node_local_dns_enabled ? 1 : 0
+
+  input = [
+    yamlencode(local.node_local_dns_helm_default_values),
+    local.node_local_dns["override_values"]
+  ]
+}
+
 data "kubernetes_service" "kube_dns" {
   count = local.node_local_dns_enabled ? 1 : 0
 
@@ -69,10 +84,6 @@ data "kubernetes_service" "kube_dns" {
     name      = "kube-dns"
     namespace = "kube-system"
   }
-}
-
-output "kube_dns_ip" {
-  value = one(data.kubernetes_service.kube_dns[*].spec[0].cluster_ip)
 }
 
 resource "helm_release" "node_local_dns" {
@@ -89,15 +100,10 @@ resource "helm_release" "node_local_dns" {
   reuse_values      = local.node_local_dns["reuse_values"]
   wait              = local.node_local_dns["wait"]
   timeout           = local.node_local_dns["timeout"]
-  values            = local.node_local_dns_values
-
-  set {
-    name  = "fullnameOverride"
-    value = local.node_local_dns["name"]
-  }
+  values            = [one(data.utils_deep_merge_yaml.node_local_dns[*].output)]
 
   depends_on = [
-    helm_release.kube_prometheus_stack,
+    helm_release.node_local_dns,
     data.kubernetes_service.kube_dns
   ]
 }

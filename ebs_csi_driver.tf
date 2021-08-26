@@ -1,12 +1,23 @@
 locals {
   ebs_csi_driver_enabled = module.this.enabled && contains(var.apps_to_install, "ebs_csi_driver")
-  ebs_csi_driver         = defaults(var.ebs_csi_driver, local.helm_default_params)
-  ebs_csi_driver_values  = length(local.ebs_csi_driver["values"]) > 0 ? local.ebs_csi_driver["values"] : [yamlencode(local.ebs_csi_driver_default_values)]
-  ebs_csi_driver_default_values = {
+  ebs_csi_driver         = defaults(var.ebs_csi_driver, merge(local.helm_default_params, local.ebs_csi_driver_helm_default_params))
+  ebs_csi_driver_helm_default_params = {
+    repository      = "https://kubernetes-sigs.github.io/aws-ebs-csi-driver"
+    chart           = "ebs-csi-driver"
+    version         = "2.1.0"
+    override_values = ""
+  }
+  ebs_csi_driver_helm_default_values = {
+    "fullnameOverride" = "${local.ebs_csi_driver["name"]}"
+    "serviceAccount" = {
+      "annotations" = {
+        "eks.amazonaws.com/role-arn" = "${module.ebs_csi_driver_eks_iam_role.service_account_role_arn}"
+      }
+    }
     "controller" = {
       "extraCreateMetadata" = true
-      "k8sTagClusterId"     = "${one(data.aws_eks_cluster.default[*].id)}"
-      "region"              = "${one(data.aws_region.default[*].name)}"
+      "k8sTagClusterId"     = "${local.eks_cluster_id}"
+      "region"              = "${local.region}"
       "tolerateAllTaints"   = true
       "updateStrategy" = {
         "rollingUpdate" = {
@@ -42,25 +53,34 @@ locals {
   }
 }
 
+data "utils_deep_merge_yaml" "ebs_csi_driver" {
+  count = local.ebs_csi_driver_enabled ? 1 : 0
+
+  input = [
+    yamlencode(local.ebs_csi_driver_helm_default_values),
+    local.ebs_csi_driver["override_values"]
+  ]
+}
+
 module "ebs_csi_driver_label" {
   source  = "cloudposse/label/null"
   version = "0.24.1"
 
-  enabled = local.ebs_csi_driver_enabled
-  context = module.this.context
+  enabled    = local.ebs_csi_driver_enabled
+  attributes = ["ebs", "csi", "driver"]
+  context    = module.this.context
 }
 
 module "ebs_csi_driver_kms_key" {
   source  = "cloudposse/kms-key/aws"
   version = "0.10.0"
 
-  description             = format("KMS key for ebs-csi-driver on %s", one(data.aws_eks_cluster.default[*].id))
+  description             = format("KMS key for ebs-csi-driver on %s", local.eks_cluster_id)
   deletion_window_in_days = 10
   enable_key_rotation     = true
-  alias                   = format("alias/%s/ebs-csi-driver", one(data.aws_eks_cluster.default[*].id))
+  alias                   = format("alias/%s/ebs-csi-driver", local.eks_cluster_id)
 
-  context    = module.ebs_csi_driver_label.context
-  attributes = ["ebs", "csi", "driver"]
+  context = module.ebs_csi_driver_label.context
 }
 
 data "aws_iam_policy_document" "ebs_csi_driver" {
@@ -88,8 +108,8 @@ data "aws_iam_policy_document" "ebs_csi_driver" {
     effect = "Allow"
 
     resources = [
-      "arn:${one(data.aws_partition.default[*].partition)}:ec2:*:*:volume/*",
-      "arn:${one(data.aws_partition.default[*].partition)}:ec2:*:*:snapshot/*",
+      "arn:${local.partition}:ec2:*:*:volume/*",
+      "arn:${local.partition}:ec2:*:*:snapshot/*",
     ]
 
     actions = ["ec2:CreateTags"]
@@ -109,8 +129,8 @@ data "aws_iam_policy_document" "ebs_csi_driver" {
     effect = "Allow"
 
     resources = [
-      "arn:${one(data.aws_partition.default[*].partition)}:ec2:*:*:volume/*",
-      "arn:${one(data.aws_partition.default[*].partition)}:ec2:*:*:snapshot/*",
+      "arn:${local.partition}:ec2:*:*:volume/*",
+      "arn:${local.partition}:ec2:*:*:snapshot/*",
     ]
 
     actions = ["ec2:DeleteTags"]
@@ -214,7 +234,7 @@ data "aws_iam_policy_document" "ebs_csi_driver" {
 
   statement {
     effect    = "Allow"
-    resources = [module.ebs_csi_driver_kms_key.key_id]
+    resources = [module.ebs_csi_driver_kms_key.key_arn]
 
     actions = [
       "kms:CreateGrant",
@@ -231,7 +251,7 @@ data "aws_iam_policy_document" "ebs_csi_driver" {
 
   statement {
     effect    = "Allow"
-    resources = [module.ebs_csi_driver_kms_key.key_id]
+    resources = [module.ebs_csi_driver_kms_key.key_arn]
 
 
     actions = [
@@ -248,9 +268,9 @@ module "ebs_csi_driver_eks_iam_role" {
   source = "git::https://github.com/SweetOps/terraform-aws-eks-iam-role.git?ref=switch_to_count"
 
   aws_iam_policy_document     = one(data.aws_iam_policy_document.ebs_csi_driver[*].json)
-  aws_partition               = one(data.aws_partition.default[*].partition)
-  eks_cluster_oidc_issuer_url = one(data.aws_eks_cluster.default[*].identity[0].oidc[0].issuer)
-  service_account_name        = local.ebs_csi_driver["name"]
+  aws_partition               = local.partition
+  eks_cluster_oidc_issuer_url = local.eks_cluster_oidc_issuer_url
+  service_account_name        = "ebs-csi-controller-sa"
   service_account_namespace   = local.ebs_csi_driver["namespace"]
 
   context = module.ebs_csi_driver_label.context
@@ -270,27 +290,7 @@ resource "helm_release" "ebs_csi_driver" {
   reuse_values      = local.ebs_csi_driver["reuse_values"]
   wait              = local.ebs_csi_driver["wait"]
   timeout           = local.ebs_csi_driver["timeout"]
-  values            = local.ebs_csi_driver_values
-
-  set {
-    name  = "fullnameOverride"
-    value = local.ebs_csi_driver["name"]
-  }
-
-  set {
-    name  = "controller.k8sTagClusterId"
-    value = one(data.aws_eks_cluster.default[*].id)
-  }
-
-  set {
-    name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    value = module.ebs_csi_driver_eks_iam_role.service_account_role_arn
-  }
-
-  set {
-    name  = "node.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    value = module.ebs_csi_driver_eks_iam_role.service_account_role_arn
-  }
+  values            = [one(data.utils_deep_merge_yaml.ebs_csi_driver[*].output)]
 
   depends_on = [
     module.ebs_csi_driver_eks_iam_role,

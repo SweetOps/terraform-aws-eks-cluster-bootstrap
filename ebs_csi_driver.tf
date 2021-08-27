@@ -67,7 +67,6 @@ module "ebs_csi_driver_label" {
   version = "0.24.1"
 
   enabled = local.ebs_csi_driver_enabled
-  # attributes = ["ebs", "csi", "driver"]
   context = module.this.context
 }
 

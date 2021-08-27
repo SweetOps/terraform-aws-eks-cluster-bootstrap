@@ -3,7 +3,7 @@ locals {
   external_dns_helm_default_params = {
     repository      = "https://charts.bitnami.com/bitnami"
     chart           = "external-dns"
-    version         = "1.1.2"
+    version         = "5.4.4"
     override_values = ""
   }
   external_dns_helm_default_values = {

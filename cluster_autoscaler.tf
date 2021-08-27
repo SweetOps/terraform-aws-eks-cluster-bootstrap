@@ -4,7 +4,7 @@ locals {
   cluster_autoscaler_helm_default_params = {
     repository      = "https://kubernetes.github.io/autoscaler"
     chart           = "cluster-autoscaler"
-    version         = "9.7.0"
+    version         = "9.10.5"
     override_values = ""
   }
   cluster_autoscaler_helm_default_values = {
@@ -67,8 +67,8 @@ module "cluster_autoscaler_eks_iam_role" {
   aws_iam_policy_document     = one(data.aws_iam_policy_document.cluster_autoscaler[*].json)
   aws_partition               = local.partition
   eks_cluster_oidc_issuer_url = local.eks_cluster_oidc_issuer_url
-  service_account_name        = var.cluster_autoscaler["name"]
-  service_account_namespace   = var.cluster_autoscaler["namespace"]
+  service_account_name        = local.cluster_autoscaler["name"]
+  service_account_namespace   = local.cluster_autoscaler["namespace"]
 
   context = module.cluster_autoscaler_label.context
 }
@@ -76,14 +76,14 @@ module "cluster_autoscaler_eks_iam_role" {
 resource "helm_release" "cluster_autoscaler" {
   count = local.cluster_autoscaler_enabled ? 1 : 0
 
-  name              = var.cluster_autoscaler["name"]
-  repository        = var.cluster_autoscaler["repository"]
-  chart             = var.cluster_autoscaler["chart"]
-  version           = var.cluster_autoscaler["version"]
-  namespace         = var.cluster_autoscaler["namespace"]
-  max_history       = var.cluster_autoscaler["max_history"]
-  create_namespace  = var.cluster_autoscaler["create_namespace"]
-  dependency_update = var.cluster_autoscaler["dependency_update"]
+  name              = local.cluster_autoscaler["name"]
+  repository        = local.cluster_autoscaler["repository"]
+  chart             = local.cluster_autoscaler["chart"]
+  version           = local.cluster_autoscaler["version"]
+  namespace         = local.cluster_autoscaler["namespace"]
+  max_history       = local.cluster_autoscaler["max_history"]
+  create_namespace  = local.cluster_autoscaler["create_namespace"]
+  dependency_update = local.cluster_autoscaler["dependency_update"]
   values            = [one(data.utils_deep_merge_yaml.cluster_autoscaler[*].output)]
 
   depends_on = [

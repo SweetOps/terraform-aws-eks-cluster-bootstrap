@@ -76,9 +76,8 @@ module "vault_label" {
   source  = "cloudposse/label/null"
   version = "0.24.1"
 
-  enabled    = local.vault_enabled
-  attributes = ["vault"]
-  context    = module.this.context
+  enabled = local.vault_enabled
+  context = module.this.context
 }
 
 module "vault_kms_key" {

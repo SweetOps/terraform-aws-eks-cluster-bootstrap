@@ -3,17 +3,12 @@ locals {
   ebs_csi_driver         = defaults(var.ebs_csi_driver, merge(local.helm_default_params, local.ebs_csi_driver_helm_default_params))
   ebs_csi_driver_helm_default_params = {
     repository      = "https://kubernetes-sigs.github.io/aws-ebs-csi-driver"
-    chart           = "ebs-csi-driver"
+    chart           = "aws-ebs-csi-driver"
     version         = "2.1.0"
     override_values = ""
   }
   ebs_csi_driver_helm_default_values = {
     "fullnameOverride" = "${local.ebs_csi_driver["name"]}"
-    "serviceAccount" = {
-      "annotations" = {
-        "eks.amazonaws.com/role-arn" = "${module.ebs_csi_driver_eks_iam_role.service_account_role_arn}"
-      }
-    }
     "controller" = {
       "extraCreateMetadata" = true
       "k8sTagClusterId"     = "${local.eks_cluster_id}"
@@ -25,6 +20,11 @@ locals {
           "maxUnavailable" = 1
         }
         "type" = "RollingUpdate"
+      }
+      "serviceAccount" = {
+        "annotations" = {
+          "eks.amazonaws.com/role-arn" = "${module.ebs_csi_driver_eks_iam_role.service_account_role_arn}"
+        }
       }
     }
     "enableVolumeResizing" = true
@@ -66,9 +66,8 @@ module "ebs_csi_driver_label" {
   source  = "cloudposse/label/null"
   version = "0.24.1"
 
-  enabled    = local.ebs_csi_driver_enabled
-  attributes = ["ebs", "csi", "driver"]
-  context    = module.this.context
+  enabled = local.ebs_csi_driver_enabled
+  context = module.this.context
 }
 
 module "ebs_csi_driver_kms_key" {

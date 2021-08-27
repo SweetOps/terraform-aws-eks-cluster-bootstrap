@@ -67,9 +67,8 @@ module "velero_label" {
   source  = "cloudposse/label/null"
   version = "0.24.1"
 
-  enabled    = local.velero_enabled
-  attributes = ["velero", "backup"]
-  context    = module.this.context
+  enabled = local.velero_enabled
+  context = module.this.context
 }
 
 module "velero_s3_bucket" {

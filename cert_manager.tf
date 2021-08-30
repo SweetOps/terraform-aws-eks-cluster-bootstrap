@@ -28,7 +28,7 @@ locals {
   cert_manager_issuers_helm_default_values = {
     "fullnameOverride" = "${local.cert_manager_issuers["name"]}"
   }
-  cert_manager_issuers = defaults(var.cert_manager_issuers, merge(local.helm_default_params, local.cert_manager_helm_default_params))
+  cert_manager_issuers = defaults(var.cert_manager_issuers, merge(local.helm_default_params, local.cert_manager_issuers_helm_default_params))
 }
 
 data "utils_deep_merge_yaml" "cert_manager" {

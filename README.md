@@ -59,6 +59,7 @@ NOTE: This module is under heavy development.
 | label\_key\_case | The letter case of label keys (`tag` names) (i.e. `name`, `namespace`, `environment`, `stage`, `attributes`) to use in `tags`.<br>Possible values: `lower`, `title`, `upper`.<br>Default value: `title`. | `string` | `"lower"` | no |
 | label\_order | The naming order of the id output and Name tag.<br>Defaults to ["namespace", "environment", "stage", "name", "attributes"].<br>You can omit any of the 5 elements, but at least one must be present. | `list(string)` | `null` | no |
 | label\_value\_case | The letter case of output label values (also used in `tags` and `id`).<br>Possible values: `lower`, `title`, `upper` and `none` (no transformation).<br>Default value: `lower`. | `string` | `null` | no |
+| linkerd2 | n/a | <pre>object({<br>    name              = string<br>    namespace         = string<br>    repository        = optional(string)<br>    chart             = optional(string)<br>    version           = optional(string)<br>    override_values   = optional(string)<br>    max_history       = optional(number)<br>    create_namespace  = optional(bool)<br>    dependency_update = optional(bool)<br>    reuse_values      = optional(bool)<br>    wait              = optional(bool)<br>    timeout           = optional(number)<br>  })</pre> | <pre>{<br>  "name": "linkerd2",<br>  "namespace": "linkerd2"<br>}</pre> | no |
 | loki | n/a | <pre>object({<br>    name              = string<br>    namespace         = string<br>    repository        = optional(string)<br>    chart             = optional(string)<br>    version           = optional(string)<br>    override_values   = optional(string)<br>    max_history       = optional(number)<br>    create_namespace  = optional(bool)<br>    dependency_update = optional(bool)<br>    reuse_values      = optional(bool)<br>    wait              = optional(bool)<br>    timeout           = optional(number)<br>  })</pre> | <pre>{<br>  "name": "loki",<br>  "namespace": "monitoring"<br>}</pre> | no |
 | name | Solution name, e.g. 'app' or 'jenkins' | `string` | `null` | no |
 | namespace | Namespace, which could be your organization name or abbreviation, e.g. 'eg' or 'cp' | `string` | `null` | no |
@@ -79,6 +80,13 @@ NOTE: This module is under heavy development.
 | Name | Description |
 |------|-------------|
 | actions\_runner\_controller\_metadata | Block status of the deployed GitHub Actions runner controller |
+| argo\_events\_metadata | Block status of the deployed Argo Events |
+| argo\_rollouts\_metadata | Block status of the deployed Argo Rollouts |
+| argo\_workflows\_metadata | Block status of the deployed Argo Workflows |
+| argocd\_applicationset\_metadata | Block status of the deployed ArgoCD ApplicationSet |
+| argocd\_image\_updater\_metadata | Block status of the deployed ArgoCD Image Updater |
+| argocd\_metadata | Block status of the deployed ArgoCD |
+| argocd\_notifications\_metadata | Block status of the deployed ArgoCD Notifications |
 | aws\_node\_termination\_handler\_metadata | Block status of the deployed AWS Node Termination Handler |
 | cert\_manager\_metadata | Block status of the deployed Cert-Manager |
 | cluster\_autoscaler\_metadata | Block status of the deployed Cluster-Autoscaler |
@@ -96,14 +104,33 @@ NOTE: This module is under heavy development.
 | external\_dns\_metadata | Block status of the deployed External DNS |
 | ingress\_nginx\_metadata | Block status of the deployed Ingress Nginx |
 | kube\_prometheus\_stack\_metadata | Block status of the deployed Kube Prometheus Stack |
+| linkerd2\_metadata | Block status of the deployed Linkerd2 |
+| loki\_bucket\_arn | Grafana LokiS3 bucket ARN |
+| loki\_bucket\_id | Grafana LokiS3 bucket name |
+| loki\_metadata | Block status of the deployed loki |
+| loki\_service\_account\_policy\_id | Grafana LokiIAM policy ID |
+| loki\_service\_account\_policy\_name | Grafana LokiIAM policy name |
+| loki\_service\_account\_role\_arn | Grafana LokiIAM role ARN |
+| loki\_service\_account\_role\_name | Grafana LokiIAM role name |
+| loki\_service\_account\_role\_unique\_id | Grafana LokiIAM role unique ID |
 | node\_local\_dns\_metadata | Block status of the deployed Node Local DNS |
 | oauth2\_proxy\_metadata | Block status of the deployed OAuth2 proxy |
+| tempo\_bucket\_arn | Grafana Tempto S3 bucket ARN |
+| tempo\_bucket\_id | Grafana Tempto S3 bucket name |
+| tempo\_metadata | Block status of the deployed tempo |
+| tempo\_service\_account\_policy\_id | Grafana Tempto IAM policy ID |
+| tempo\_service\_account\_policy\_name | Grafana Tempto IAM policy name |
+| tempo\_service\_account\_role\_arn | Grafana Tempto IAM role ARN |
+| tempo\_service\_account\_role\_name | Grafana Tempto IAM role name |
+| tempo\_service\_account\_role\_unique\_id | Grafana Tempto IAM role unique ID |
 | vault\_metadata | Block status of the deployed Vault |
 | vault\_service\_account\_policy\_id | Vault IAM policy ID |
 | vault\_service\_account\_policy\_name | Vault IAM policy name |
 | vault\_service\_account\_role\_arn | Vault IAM role ARN |
 | vault\_service\_account\_role\_name | Vault IAM role name |
 | vault\_service\_account\_role\_unique\_id | Vault IAM role unique ID |
+| velero\_bucket\_arn | Velero S3 bucket ARN |
+| velero\_bucket\_id | Velero S3 bucket name |
 | velero\_metadata | Block status of the deployed Velero |
 | velero\_service\_account\_policy\_id | Velero IAM policy ID |
 | velero\_service\_account\_policy\_name | Velero IAM policy name |

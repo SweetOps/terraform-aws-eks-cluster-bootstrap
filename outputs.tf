@@ -153,6 +153,16 @@ output "velero_service_account_policy_id" {
   description = "Velero IAM policy ID"
 }
 
+output "velero_bucket_id" {
+  value       = module.velero_s3_bucket.bucket_id
+  description = "Velero S3 bucket name"
+}
+
+output "velero_bucket_arn" {
+  value       = module.velero_s3_bucket.bucket_arn
+  description = "Velero S3 bucket ARN"
+}
+
 output "oauth2_proxy_metadata" {
   value       = local.oauth2_proxy_enabled ? helm_release.oauth2_proxy[0].metadata : null
   description = "Block status of the deployed OAuth2 proxy"
@@ -161,4 +171,124 @@ output "oauth2_proxy_metadata" {
 output "actions_runner_controller_metadata" {
   value       = local.actions_runner_controller_enabled ? helm_release.actions_runner_controller[0].metadata : null
   description = "Block status of the deployed GitHub Actions runner controller"
+}
+
+output "loki_metadata" {
+  value       = local.loki_enabled ? helm_release.loki[0].metadata : null
+  description = "Block status of the deployed loki"
+}
+
+output "loki_service_account_role_name" {
+  value       = module.loki_eks_iam_role.service_account_role_name
+  description = "Grafana LokiIAM role name"
+}
+
+output "loki_service_account_role_unique_id" {
+  value       = module.loki_eks_iam_role.service_account_role_unique_id
+  description = "Grafana LokiIAM role unique ID"
+}
+
+output "loki_service_account_role_arn" {
+  value       = module.loki_eks_iam_role.service_account_role_arn
+  description = "Grafana LokiIAM role ARN"
+}
+
+output "loki_service_account_policy_name" {
+  value       = module.loki_eks_iam_role.service_account_policy_name
+  description = "Grafana LokiIAM policy name"
+}
+
+output "loki_service_account_policy_id" {
+  value       = module.loki_eks_iam_role.service_account_policy_id
+  description = "Grafana LokiIAM policy ID"
+}
+
+output "loki_bucket_id" {
+  value       = module.loki_s3_bucket.bucket_id
+  description = "Grafana LokiS3 bucket name"
+}
+
+output "loki_bucket_arn" {
+  value       = module.loki_s3_bucket.bucket_arn
+  description = "Grafana LokiS3 bucket ARN"
+}
+
+output "tempo_metadata" {
+  value       = local.tempo_enabled ? helm_release.tempo[0].metadata : null
+  description = "Block status of the deployed tempo"
+}
+
+output "tempo_service_account_role_name" {
+  value       = module.tempo_eks_iam_role.service_account_role_name
+  description = "Grafana Tempto IAM role name"
+}
+
+output "tempo_service_account_role_unique_id" {
+  value       = module.tempo_eks_iam_role.service_account_role_unique_id
+  description = "Grafana Tempto IAM role unique ID"
+}
+
+output "tempo_service_account_role_arn" {
+  value       = module.tempo_eks_iam_role.service_account_role_arn
+  description = "Grafana Tempto IAM role ARN"
+}
+
+output "tempo_service_account_policy_name" {
+  value       = module.tempo_eks_iam_role.service_account_policy_name
+  description = "Grafana Tempto IAM policy name"
+}
+
+output "tempo_service_account_policy_id" {
+  value       = module.tempo_eks_iam_role.service_account_policy_id
+  description = "Grafana Tempto IAM policy ID"
+}
+
+output "tempo_bucket_id" {
+  value       = module.tempo_s3_bucket.bucket_id
+  description = "Grafana Tempto S3 bucket name"
+}
+
+output "tempo_bucket_arn" {
+  value       = module.tempo_s3_bucket.bucket_arn
+  description = "Grafana Tempto S3 bucket ARN"
+}
+
+output "argo_events_metadata" {
+  value       = local.argo_events_enabled ? helm_release.argo_events[0].metadata : null
+  description = "Block status of the deployed Argo Events"
+}
+
+output "argo_rollouts_metadata" {
+  value       = local.argo_rollouts_enabled ? helm_release.argo_rollouts[0].metadata : null
+  description = "Block status of the deployed Argo Rollouts"
+}
+
+output "argo_workflows_metadata" {
+  value       = local.argo_workflows_enabled ? helm_release.argo_workflows[0].metadata : null
+  description = "Block status of the deployed Argo Workflows"
+}
+
+output "argocd_metadata" {
+  value       = local.argocd_enabled ? helm_release.argocd[0].metadata : null
+  description = "Block status of the deployed ArgoCD"
+}
+
+output "argocd_applicationset_metadata" {
+  value       = local.argocd_applicationset_enabled ? helm_release.argocd_applicationset[0].metadata : null
+  description = "Block status of the deployed ArgoCD ApplicationSet"
+}
+
+output "argocd_image_updater_metadata" {
+  value       = local.argocd_image_updater_enabled ? helm_release.argocd_image_updater[0].metadata : null
+  description = "Block status of the deployed ArgoCD Image Updater"
+}
+
+output "argocd_notifications_metadata" {
+  value       = local.argocd_notifications_enabled ? helm_release.argocd_notifications[0].metadata : null
+  description = "Block status of the deployed ArgoCD Notifications"
+}
+
+output "linkerd2_metadata" {
+  value       = local.linkerd2_enabled ? helm_release.linkerd2[0].metadata : null
+  description = "Block status of the deployed Linkerd2"
 }

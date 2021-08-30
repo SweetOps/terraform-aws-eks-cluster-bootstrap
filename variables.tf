@@ -23,7 +23,9 @@ variable "apps_to_install" {
     "argocd_applicationset",
     "argocd_image_updater",
     "argocd_notifications",
-    "sentry"
+    "sentry",
+    "loki",
+    "tempo"
   ]
   description = "A list of apps which will be installed"
 }

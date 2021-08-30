@@ -89,7 +89,8 @@ module "vault_kms_key" {
   enable_key_rotation     = true
   alias                   = format("alias/%s/vault", local.eks_cluster_id)
 
-  context = module.vault_label.context
+  context    = module.vault_label.context
+  attributes = [local.vault["name"]]
 }
 
 module "vault_dynamodb_table" {
@@ -112,7 +113,8 @@ module "vault_dynamodb_table" {
     }
   ]
 
-  context = module.vault_label.context
+  context    = module.vault_label.context
+  attributes = [local.vault["name"]]
 }
 
 data "aws_iam_policy_document" "vault" {
@@ -195,5 +197,8 @@ resource "helm_release" "vault" {
     module.vault_dynamodb_table,
     helm_release.kube_prometheus_stack,
     helm_release.node_local_dns,
+    helm_release.cert_manager,
+    helm_release.external_dns,
+    helm_release.ingress_nginx
   ]
 }

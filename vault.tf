@@ -89,7 +89,8 @@ module "vault_kms_key" {
   enable_key_rotation     = true
   alias                   = format("alias/%s/vault", local.eks_cluster_id)
 
-  context = module.vault_label.context
+  context    = module.vault_label.context
+  attributes = [local.vault["name"]]
 }
 
 module "vault_dynamodb_table" {
@@ -112,7 +113,8 @@ module "vault_dynamodb_table" {
     }
   ]
 
-  context = module.vault_label.context
+  context    = module.vault_label.context
+  attributes = [local.vault["name"]]
 }
 
 data "aws_iam_policy_document" "vault" {

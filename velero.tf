@@ -79,7 +79,8 @@ module "velero_s3_bucket" {
   user_enabled       = false
   versioning_enabled = false
 
-  context = module.velero_label.context
+  context    = module.velero_label.context
+  attributes = [local.velero["name"]]
 }
 
 data "aws_iam_policy_document" "velero" {

@@ -44,7 +44,8 @@ module "tempo_s3_bucket" {
   user_enabled       = false
   versioning_enabled = false
 
-  context = module.tempo_label.context
+  context    = module.tempo_label.context
+  attributes = [local.tempo["name"]]
 }
 
 data "aws_iam_policy_document" "tempo" {
@@ -104,6 +105,7 @@ resource "helm_release" "tempo" {
     helm_release.node_local_dns,
     helm_release.cert_manager,
     helm_release.external_dns,
-    helm_release.ingress_nginx
+    helm_release.ingress_nginx,
+    helm_release.victoria_metrics
   ]
 }

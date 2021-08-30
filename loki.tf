@@ -44,7 +44,8 @@ module "loki_s3_bucket" {
   user_enabled       = false
   versioning_enabled = false
 
-  context = module.loki_label.context
+  context    = module.loki_label.context
+  attributes = [local.loki["name"]]
 }
 
 data "aws_iam_policy_document" "loki" {
@@ -103,6 +104,7 @@ resource "helm_release" "loki" {
     helm_release.node_local_dns,
     helm_release.cert_manager,
     helm_release.external_dns,
-    helm_release.ingress_nginx
+    helm_release.ingress_nginx,
+    helm_release.victoria_metrics
   ]
 }

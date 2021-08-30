@@ -89,26 +89,12 @@ data "aws_iam_policy_document" "velero" {
     effect = "Allow"
 
     resources = [
-      format("%s/*", module.velero_s3_bucket.bucket_arn)
-    ]
-
-    actions = [
-      "s3:GetObject",
-      "s3:DeleteObject",
-      "s3:PutObject",
-      "s3:AbortMultipartUpload",
-      "s3:ListMultipartUploadParts"
-    ]
-  }
-
-  statement {
-    effect = "Allow"
-
-    resources = [
+      format("%s/*", module.velero_s3_bucket.bucket_arn),
       module.velero_s3_bucket.bucket_arn
     ]
 
     actions = [
+      "s3:ListBucket",
       "s3:GetObject",
       "s3:DeleteObject",
       "s3:PutObject",

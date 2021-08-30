@@ -14,7 +14,15 @@ variable "apps_to_install" {
     "vault",
     "actions_runner_controller",
     "velero",
-    "oauth2_proxy"
+    "oauth2_proxy",
+    "node_problem_detector",
+    "argo_events",
+    "argo_rollouts",
+    "argo_workflows",
+    "argocd",
+    "argocd_applicationset",
+    "argocd_image_updater",
+    "argocd_notifications"
   ]
   description = "A list of apps which will be installed"
 }
@@ -351,5 +359,159 @@ variable "node_problem_detector" {
   default = {
     name      = "node-problem-detector"
     namespace = "monitoring"
+  }
+}
+
+variable "argocd_notifications" {
+  type = object({
+    name              = string
+    namespace         = string
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
+    max_history       = optional(number)
+    create_namespace  = optional(bool)
+    dependency_update = optional(bool)
+    reuse_values      = optional(bool)
+    wait              = optional(bool)
+    timeout           = optional(number)
+  })
+
+  default = {
+    name      = "argocd-notifications"
+    namespace = "argo"
+  }
+}
+
+variable "argocd_image_updater" {
+  type = object({
+    name              = string
+    namespace         = string
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
+    max_history       = optional(number)
+    create_namespace  = optional(bool)
+    dependency_update = optional(bool)
+    reuse_values      = optional(bool)
+    wait              = optional(bool)
+    timeout           = optional(number)
+  })
+
+  default = {
+    name      = "argocd-image-updater"
+    namespace = "argo"
+  }
+}
+
+variable "argocd_applicationset" {
+  type = object({
+    name              = string
+    namespace         = string
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
+    max_history       = optional(number)
+    create_namespace  = optional(bool)
+    dependency_update = optional(bool)
+    reuse_values      = optional(bool)
+    wait              = optional(bool)
+    timeout           = optional(number)
+  })
+
+  default = {
+    name      = "argocd-applicationset"
+    namespace = "argo"
+  }
+}
+
+variable "argo_workflows" {
+  type = object({
+    name              = string
+    namespace         = string
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
+    max_history       = optional(number)
+    create_namespace  = optional(bool)
+    dependency_update = optional(bool)
+    reuse_values      = optional(bool)
+    wait              = optional(bool)
+    timeout           = optional(number)
+  })
+
+  default = {
+    name      = "argo-workflows"
+    namespace = "argo"
+  }
+}
+
+variable "argo_rollouts" {
+  type = object({
+    name              = string
+    namespace         = string
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
+    max_history       = optional(number)
+    create_namespace  = optional(bool)
+    dependency_update = optional(bool)
+    reuse_values      = optional(bool)
+    wait              = optional(bool)
+    timeout           = optional(number)
+  })
+
+  default = {
+    name      = "argo-rollouts"
+    namespace = "argo"
+  }
+}
+
+variable "argo_events" {
+  type = object({
+    name              = string
+    namespace         = string
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
+    max_history       = optional(number)
+    create_namespace  = optional(bool)
+    dependency_update = optional(bool)
+    reuse_values      = optional(bool)
+    wait              = optional(bool)
+    timeout           = optional(number)
+  })
+
+  default = {
+    name      = "argo-events"
+    namespace = "argo"
+  }
+}
+
+variable "argocd" {
+  type = object({
+    name              = string
+    namespace         = string
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
+    max_history       = optional(number)
+    create_namespace  = optional(bool)
+    dependency_update = optional(bool)
+    reuse_values      = optional(bool)
+    wait              = optional(bool)
+    timeout           = optional(number)
+  })
+
+  default = {
+    name      = "argocd"
+    namespace = "argo"
   }
 }

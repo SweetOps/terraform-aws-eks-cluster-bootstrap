@@ -4,7 +4,7 @@ locals {
   victoria_metrics_helm_default_params = {
     repository      = "https://victoriametrics.github.io/helm-charts"
     chart           = "victoria-metrics-k8s-stack"
-    version         = "1.5.0"
+    version         = "0.4.1"
     override_values = ""
   }
   victoria_metrics_helm_default_values = {
@@ -35,7 +35,7 @@ resource "helm_release" "victoria_metrics" {
   reuse_values      = local.victoria_metrics["reuse_values"]
   wait              = local.victoria_metrics["wait"]
   timeout           = local.victoria_metrics["timeout"]
-  values            = [one(data.utils_deep_merge_yaml.aws_node_termination_handler[*].output)]
+  values            = [one(data.utils_deep_merge_yaml.victoria_metrics[*].output)]
 
   depends_on = [
     helm_release.kube_prometheus_stack,

@@ -2,7 +2,7 @@ locals {
   argocd_enabled = module.this.enabled && contains(var.apps_to_install, "argocd")
   argocd_helm_default_params = {
     repository      = "https://argoproj.github.io/argo-helm"
-    chart           = "argocd"
+    chart           = "argo-cd"
     version         = "3.17.5"
     override_values = ""
   }

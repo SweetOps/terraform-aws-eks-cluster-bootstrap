@@ -32,6 +32,7 @@ locals {
       "ha" = {
         "apiAddr" = null
         "config"  = <<-EOT
+      service_registration "kubernetes" {}
       ui = true
       listener "tcp" {
         tls_disable = 1

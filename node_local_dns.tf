@@ -103,7 +103,7 @@ resource "helm_release" "node_local_dns" {
   values            = [one(data.utils_deep_merge_yaml.node_local_dns[*].output)]
 
   depends_on = [
-    helm_release.node_local_dns,
+    helm_release.calico,
     data.kubernetes_service.kube_dns
   ]
 }

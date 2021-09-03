@@ -196,6 +196,7 @@ resource "helm_release" "vault" {
     module.vault_eks_iam_role,
     module.vault_kms_key,
     module.vault_dynamodb_table,
+    helm_release.calico,
     helm_release.kube_prometheus_stack,
     helm_release.node_local_dns,
     helm_release.cert_manager,

@@ -292,6 +292,7 @@ resource "helm_release" "ebs_csi_driver" {
   values            = [one(data.utils_deep_merge_yaml.ebs_csi_driver[*].output)]
 
   depends_on = [
+    helm_release.calico,
     module.ebs_csi_driver_eks_iam_role,
     module.ebs_csi_driver_kms_key
   ]

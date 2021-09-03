@@ -36,4 +36,8 @@ resource "helm_release" "kube_prometheus_stack" {
   wait              = local.kube_prometheus_stack["wait"]
   timeout           = local.kube_prometheus_stack["timeout"]
   values            = [one(data.utils_deep_merge_yaml.kube_prometheus_stack[*].output)]
+
+  depends_on = [
+    helm_release.calico
+  ]
 }

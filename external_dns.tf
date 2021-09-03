@@ -39,6 +39,7 @@ resource "helm_release" "external_dns" {
   values            = [one(data.utils_deep_merge_yaml.external_dns[*].output)]
 
   depends_on = [
+    helm_release.calico,
     helm_release.node_local_dns,
     helm_release.kube_prometheus_stack
   ]

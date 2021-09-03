@@ -38,6 +38,7 @@ resource "helm_release" "vertical_pod_autoscaler" {
   values            = [one(data.utils_deep_merge_yaml.vertical_pod_autoscaler[*].output)]
 
   depends_on = [
+    helm_release.calico,
     helm_release.node_local_dns,
     helm_release.kube_prometheus_stack,
   ]

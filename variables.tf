@@ -28,7 +28,8 @@ variable "apps_to_install" {
     "tempo",
     "descheduler",
     "vertical_pod_autoscaler",
-    "keda"
+    "keda",
+    "calico"
   ]
   description = "A list of apps which will be installed"
 }
@@ -671,6 +672,28 @@ variable "keda" {
 
   default = {
     name      = "keda"
+    namespace = "kube-system"
+  }
+}
+
+variable "calico" {
+  type = object({
+    name              = string
+    namespace         = string
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
+    max_history       = optional(number)
+    create_namespace  = optional(bool)
+    dependency_update = optional(bool)
+    reuse_values      = optional(bool)
+    wait              = optional(bool)
+    timeout           = optional(number)
+  })
+
+  default = {
+    name      = "calico"
     namespace = "kube-system"
   }
 }

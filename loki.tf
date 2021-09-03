@@ -98,6 +98,7 @@ resource "helm_release" "loki" {
   values            = [one(data.utils_deep_merge_yaml.loki[*].output)]
 
   depends_on = [
+    helm_release.calico,
     module.loki_eks_iam_role,
     module.loki_s3_bucket,
     helm_release.kube_prometheus_stack,

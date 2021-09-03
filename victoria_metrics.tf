@@ -38,6 +38,7 @@ resource "helm_release" "victoria_metrics" {
   values            = [one(data.utils_deep_merge_yaml.victoria_metrics[*].output)]
 
   depends_on = [
+    helm_release.calico,
     helm_release.kube_prometheus_stack,
     helm_release.ebs_csi_driver,
     helm_release.cert_manager,

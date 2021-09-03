@@ -46,6 +46,7 @@ resource "helm_release" "aws_node_termination_handler" {
   values            = [one(data.utils_deep_merge_yaml.aws_node_termination_handler[*].output)]
 
   depends_on = [
+    helm_release.calico,
     helm_release.kube_prometheus_stack
   ]
 }

@@ -38,6 +38,7 @@ resource "helm_release" "descheduler" {
   values            = [one(data.utils_deep_merge_yaml.descheduler[*].output)]
 
   depends_on = [
+    helm_release.calico,
     helm_release.node_local_dns,
   ]
 }

@@ -101,6 +101,7 @@ resource "helm_release" "tempo" {
   depends_on = [
     module.tempo_eks_iam_role,
     module.tempo_s3_bucket,
+    helm_release.calico,
     helm_release.kube_prometheus_stack,
     helm_release.node_local_dns,
     helm_release.cert_manager,

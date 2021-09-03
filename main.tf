@@ -3,7 +3,7 @@ locals {
     max_history       = 10
     create_namespace  = true
     dependency_update = true
-    reuse_values      = true
+    reuse_values      = false
     timeout           = 300
   }
   eks_cluster_id              = one(data.aws_eks_cluster.default[*].id)

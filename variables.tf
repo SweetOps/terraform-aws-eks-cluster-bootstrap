@@ -25,7 +25,10 @@ variable "apps_to_install" {
     "argocd_notifications",
     "sentry",
     "loki",
-    "tempo"
+    "tempo",
+    "descheduler",
+    "vertical_pod_autoscaler",
+    "keda"
   ]
   description = "A list of apps which will be installed"
 }
@@ -604,5 +607,70 @@ variable "linkerd2" {
   default = {
     name      = "linkerd2"
     namespace = "linkerd2"
+  }
+}
+variable "descheduler" {
+  type = object({
+    name              = string
+    namespace         = string
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
+    max_history       = optional(number)
+    create_namespace  = optional(bool)
+    dependency_update = optional(bool)
+    reuse_values      = optional(bool)
+    wait              = optional(bool)
+    timeout           = optional(number)
+  })
+
+  default = {
+    name      = "descheduler"
+    namespace = "kube-system"
+  }
+}
+
+variable "vertical_pod_autoscaler" {
+  type = object({
+    name              = string
+    namespace         = string
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
+    max_history       = optional(number)
+    create_namespace  = optional(bool)
+    dependency_update = optional(bool)
+    reuse_values      = optional(bool)
+    wait              = optional(bool)
+    timeout           = optional(number)
+  })
+
+  default = {
+    name      = "vertical-pod-autoscaler"
+    namespace = "kube-system"
+  }
+}
+
+variable "keda" {
+  type = object({
+    name              = string
+    namespace         = string
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
+    max_history       = optional(number)
+    create_namespace  = optional(bool)
+    dependency_update = optional(bool)
+    reuse_values      = optional(bool)
+    wait              = optional(bool)
+    timeout           = optional(number)
+  })
+
+  default = {
+    name      = "keda"
+    namespace = "kube-system"
   }
 }

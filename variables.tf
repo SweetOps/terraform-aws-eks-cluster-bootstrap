@@ -29,7 +29,10 @@ variable "apps_to_install" {
     "descheduler",
     "vertical_pod_autoscaler",
     "keda",
-    "calico"
+    "calico",
+    "falco",
+    "falcosidekick",
+    "gatekeeper"
   ]
   description = "A list of apps which will be installed"
 }
@@ -695,5 +698,71 @@ variable "calico" {
   default = {
     name      = "calico"
     namespace = "kube-system"
+  }
+}
+
+variable "falco" {
+  type = object({
+    name              = string
+    namespace         = string
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
+    max_history       = optional(number)
+    create_namespace  = optional(bool)
+    dependency_update = optional(bool)
+    reuse_values      = optional(bool)
+    wait              = optional(bool)
+    timeout           = optional(number)
+  })
+
+  default = {
+    name      = "falco"
+    namespace = "falco"
+  }
+}
+
+variable "falcosidekick" {
+  type = object({
+    name              = string
+    namespace         = string
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
+    max_history       = optional(number)
+    create_namespace  = optional(bool)
+    dependency_update = optional(bool)
+    reuse_values      = optional(bool)
+    wait              = optional(bool)
+    timeout           = optional(number)
+  })
+
+  default = {
+    name      = "falcosidekick"
+    namespace = "falco"
+  }
+}
+
+variable "gatekeeper" {
+  type = object({
+    name              = string
+    namespace         = string
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
+    max_history       = optional(number)
+    create_namespace  = optional(bool)
+    dependency_update = optional(bool)
+    reuse_values      = optional(bool)
+    wait              = optional(bool)
+    timeout           = optional(number)
+  })
+
+  default = {
+    name      = "gatekeeper"
+    namespace = "gatekeeper"
   }
 }

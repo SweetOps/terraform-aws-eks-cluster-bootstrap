@@ -5,6 +5,7 @@ locals {
     chart           = "github-actions-runners"
     version         = "0.0.2"
     override_values = ""
+    iam_policy      = ""
   }
   github_actions_runners_helm_default_values = {
     "fullnameOverride" = "${local.github_actions_runners["name"]}"
@@ -19,6 +20,19 @@ data "utils_deep_merge_yaml" "github_actions_runners" {
     yamlencode(local.github_actions_runners_helm_default_values),
     local.github_actions_runners["override_values"]
   ]
+}
+
+module "github_actions_runners_eks_iam_role" {
+  source = "git::https://github.com/SweetOps/terraform-aws-eks-iam-role.git?ref=switch_to_count"
+
+  aws_iam_policy_document     = local.github_actions_runners["iam_policy"]
+  aws_partition               = local.partition
+  eks_cluster_oidc_issuer_url = local.eks_cluster_oidc_issuer_url
+  service_account_name        = local.github_actions_runners["name"]
+  service_account_namespace   = local.github_actions_runners["namespace"]
+
+  enabled = local.github_actions_runners_enabled && length(local.github_actions_runners["iam_policy"]) > 0
+  context = module.this.context
 }
 
 resource "helm_release" "github_actions_runners" {

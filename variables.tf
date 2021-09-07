@@ -782,6 +782,7 @@ variable "github_actions_runners" {
     reuse_values      = optional(bool)
     wait              = optional(bool)
     timeout           = optional(number)
+    iam_policy        = optional(string)
   })
 
   default = {

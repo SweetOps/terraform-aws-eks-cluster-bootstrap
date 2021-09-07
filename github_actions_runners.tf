@@ -1,5 +1,7 @@
 locals {
   github_actions_runners_enabled = module.this.enabled && contains(var.apps_to_install, "github_actions_runners")
+  github_actions_runners         = defaults(var.github_actions_runners, merge(local.helm_default_params, local.github_actions_runners_helm_default_params))
+
   github_actions_runners_helm_default_params = {
     repository      = "https://sweetops.github.io/helm-charts"
     chart           = "github-actions-runners"
@@ -7,10 +9,16 @@ locals {
     override_values = ""
     iam_policy      = ""
   }
+
   github_actions_runners_helm_default_values = {
     "fullnameOverride" = "${local.github_actions_runners["name"]}"
+    "serviceAccount" = {
+      "annotations" = {
+        "eks.amazonaws.com/role-arn" = "${module.github_actions_runners_eks_iam_role.service_account_role_arn}"
+      }
+    }
   }
-  github_actions_runners = defaults(var.github_actions_runners, merge(local.helm_default_params, local.github_actions_runners_helm_default_params))
+
 }
 
 data "utils_deep_merge_yaml" "github_actions_runners" {

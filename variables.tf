@@ -32,7 +32,8 @@ variable "apps_to_install" {
     "calico",
     "falco",
     "falcosidekick",
-    "gatekeeper"
+    "gatekeeper",
+    "github_actions_runners"
   ]
   description = "A list of apps which will be installed"
 }
@@ -764,5 +765,28 @@ variable "gatekeeper" {
   default = {
     name      = "gatekeeper"
     namespace = "gatekeeper"
+  }
+}
+
+variable "github_actions_runners" {
+  type = object({
+    name              = string
+    namespace         = string
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
+    max_history       = optional(number)
+    create_namespace  = optional(bool)
+    dependency_update = optional(bool)
+    reuse_values      = optional(bool)
+    wait              = optional(bool)
+    timeout           = optional(number)
+    iam_policy        = optional(string)
+  })
+
+  default = {
+    name      = "github-actions-runners"
+    namespace = "cicd"
   }
 }

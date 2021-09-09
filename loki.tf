@@ -99,13 +99,9 @@ resource "helm_release" "loki" {
 
   depends_on = [
     helm_release.calico,
-    module.loki_eks_iam_role,
-    module.loki_s3_bucket,
     helm_release.kube_prometheus_stack,
     helm_release.node_local_dns,
-    helm_release.cert_manager,
-    helm_release.external_dns,
-    helm_release.ingress_nginx,
-    helm_release.victoria_metrics
+    helm_release.ebs_csi_driver,
+    helm_release.ingress_nginx
   ]
 }

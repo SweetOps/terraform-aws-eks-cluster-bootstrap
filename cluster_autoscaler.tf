@@ -89,7 +89,6 @@ resource "helm_release" "cluster_autoscaler" {
   depends_on = [
     helm_release.calico,
     helm_release.kube_prometheus_stack,
-    helm_release.node_local_dns,
-    module.cluster_autoscaler_eks_iam_role
+    helm_release.node_local_dns
   ]
 }

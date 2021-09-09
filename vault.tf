@@ -193,14 +193,9 @@ resource "helm_release" "vault" {
   values            = [one(data.utils_deep_merge_yaml.vault[*].output)]
 
   depends_on = [
-    module.vault_eks_iam_role,
-    module.vault_kms_key,
-    module.vault_dynamodb_table,
     helm_release.calico,
     helm_release.kube_prometheus_stack,
     helm_release.node_local_dns,
-    helm_release.cert_manager,
-    helm_release.external_dns,
     helm_release.ingress_nginx
   ]
 }

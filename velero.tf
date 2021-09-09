@@ -176,6 +176,5 @@ resource "helm_release" "velero" {
     helm_release.calico,
     helm_release.node_local_dns,
     helm_release.kube_prometheus_stack,
-    # module.ebs_csi_driver_kms_key
   ]
 }

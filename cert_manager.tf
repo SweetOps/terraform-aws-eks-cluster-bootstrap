@@ -89,8 +89,6 @@ resource "helm_release" "cert_manager_issuers" {
   values            = [one(data.utils_deep_merge_yaml.cert_manager_issuers[*].output)]
 
   depends_on = [
-    helm_release.kube_prometheus_stack,
-    helm_release.node_local_dns,
     helm_release.cert_manager
   ]
 }

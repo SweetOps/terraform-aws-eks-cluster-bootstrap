@@ -60,8 +60,6 @@ resource "helm_release" "github_actions_runners" {
   values            = [one(data.utils_deep_merge_yaml.github_actions_runners[*].output)]
 
   depends_on = [
-    helm_release.calico,
-    helm_release.node_local_dns,
     helm_release.actions_runner_controller
   ]
 }

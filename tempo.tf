@@ -99,14 +99,10 @@ resource "helm_release" "tempo" {
   values            = [one(data.utils_deep_merge_yaml.tempo[*].output)]
 
   depends_on = [
-    module.tempo_eks_iam_role,
-    module.tempo_s3_bucket,
     helm_release.calico,
     helm_release.kube_prometheus_stack,
     helm_release.node_local_dns,
-    helm_release.cert_manager,
-    helm_release.external_dns,
-    helm_release.ingress_nginx,
-    helm_release.victoria_metrics
+    helm_release.ebs_csi_driver,
+    helm_release.ingress_nginx
   ]
 }

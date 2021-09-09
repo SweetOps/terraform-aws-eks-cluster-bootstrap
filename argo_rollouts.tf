@@ -40,9 +40,7 @@ resource "helm_release" "argo_rollouts" {
   depends_on = [
     helm_release.calico,
     helm_release.node_local_dns,
-    helm_release.cert_manager,
     helm_release.kube_prometheus_stack,
-    helm_release.external_dns,
     helm_release.ingress_nginx
   ]
 }

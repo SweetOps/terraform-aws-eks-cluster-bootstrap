@@ -15,7 +15,7 @@ NOTE: This module is under heavy development.
 | terraform | >= 1.0 |
 | aws | >= 3.0 |
 | helm | >= 2 |
-| kubernetes | >= 2 |
+| kubernetes | >= 2.5 |
 | utils | >= 0.14.0 |
 
 ## Providers
@@ -24,7 +24,7 @@ NOTE: This module is under heavy development.
 |------|---------|
 | aws | >= 3.0 |
 | helm | >= 2 |
-| kubernetes | >= 2 |
+| kubernetes | >= 2.5 |
 | utils | >= 0.14.0 |
 
 ## Inputs
@@ -66,7 +66,7 @@ NOTE: This module is under heavy development.
 | label\_key\_case | The letter case of label keys (`tag` names) (i.e. `name`, `namespace`, `environment`, `stage`, `attributes`) to use in `tags`.<br>Possible values: `lower`, `title`, `upper`.<br>Default value: `title`. | `string` | `"lower"` | no |
 | label\_order | The naming order of the id output and Name tag.<br>Defaults to ["namespace", "environment", "stage", "name", "attributes"].<br>You can omit any of the 5 elements, but at least one must be present. | `list(string)` | `null` | no |
 | label\_value\_case | The letter case of output label values (also used in `tags` and `id`).<br>Possible values: `lower`, `title`, `upper` and `none` (no transformation).<br>Default value: `lower`. | `string` | `null` | no |
-| linkerd2 | n/a | <pre>object({<br>    name              = string<br>    namespace         = string<br>    repository        = optional(string)<br>    chart             = optional(string)<br>    version           = optional(string)<br>    override_values   = optional(string)<br>    max_history       = optional(number)<br>    create_namespace  = optional(bool)<br>    dependency_update = optional(bool)<br>    reuse_values      = optional(bool)<br>    wait              = optional(bool)<br>    timeout           = optional(number)<br>  })</pre> | <pre>{<br>  "name": "linkerd2",<br>  "namespace": "linkerd2"<br>}</pre> | no |
+| linkerd | n/a | <pre>object({<br>    name              = string<br>    namespace         = string<br>    repository        = optional(string)<br>    chart             = optional(string)<br>    version           = optional(string)<br>    override_values   = optional(string)<br>    max_history       = optional(number)<br>    create_namespace  = optional(bool)<br>    dependency_update = optional(bool)<br>    reuse_values      = optional(bool)<br>    wait              = optional(bool)<br>    timeout           = optional(number)<br>  })</pre> | <pre>{<br>  "name": "linkerd",<br>  "namespace": "linkerd"<br>}</pre> | no |
 | loki | n/a | <pre>object({<br>    name              = string<br>    namespace         = string<br>    repository        = optional(string)<br>    chart             = optional(string)<br>    version           = optional(string)<br>    override_values   = optional(string)<br>    max_history       = optional(number)<br>    create_namespace  = optional(bool)<br>    dependency_update = optional(bool)<br>    reuse_values      = optional(bool)<br>    wait              = optional(bool)<br>    timeout           = optional(number)<br>  })</pre> | <pre>{<br>  "name": "loki",<br>  "namespace": "monitoring"<br>}</pre> | no |
 | name | Solution name, e.g. 'app' or 'jenkins' | `string` | `null` | no |
 | namespace | Namespace, which could be your organization name or abbreviation, e.g. 'eg' or 'cp' | `string` | `null` | no |
@@ -112,7 +112,7 @@ NOTE: This module is under heavy development.
 | external\_dns\_metadata | Block status of the deployed External DNS |
 | ingress\_nginx\_metadata | Block status of the deployed Ingress Nginx |
 | kube\_prometheus\_stack\_metadata | Block status of the deployed Kube Prometheus Stack |
-| linkerd2\_metadata | Block status of the deployed Linkerd2 |
+| linkerd\_metadata | Block status of the deployed Linkerd |
 | loki\_bucket\_arn | Grafana LokiS3 bucket ARN |
 | loki\_bucket\_id | Grafana LokiS3 bucket name |
 | loki\_metadata | Block status of the deployed loki |

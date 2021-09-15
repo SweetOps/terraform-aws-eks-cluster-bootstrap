@@ -33,7 +33,8 @@ variable "apps_to_install" {
     "falco",
     "falcosidekick",
     "gatekeeper",
-    "github_actions_runners"
+    "github_actions_runners",
+    "linkerd"
   ]
   description = "A list of apps which will be installed"
 }

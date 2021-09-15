@@ -273,6 +273,21 @@ output "argocd_metadata" {
   description = "Block status of the deployed ArgoCD"
 }
 
+output "argocd_service_account_role_arn" {
+  value       = module.argocd_eks_iam_role.service_account_role_arn
+  description = "ArgoCD IAM role ARN"
+}
+
+output "argocd_service_account_policy_name" {
+  value       = module.argocd_eks_iam_role.service_account_policy_name
+  description = "ArgoCD IAM policy name"
+}
+
+output "argocd_service_account_policy_id" {
+  value       = module.argocd_eks_iam_role.service_account_policy_id
+  description = "ArgoCD IAM policy ID"
+}
+
 output "argocd_applicationset_metadata" {
   value       = local.argocd_applicationset_enabled ? helm_release.argocd_applicationset[0].metadata : null
   description = "Block status of the deployed ArgoCD ApplicationSet"

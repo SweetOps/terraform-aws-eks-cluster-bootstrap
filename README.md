@@ -95,6 +95,9 @@ NOTE: This module is under heavy development.
 | argocd\_image\_updater\_metadata | Block status of the deployed ArgoCD Image Updater |
 | argocd\_metadata | Block status of the deployed ArgoCD |
 | argocd\_notifications\_metadata | Block status of the deployed ArgoCD Notifications |
+| argocd\_service\_account\_policy\_id | ArgoCD IAM policy ID |
+| argocd\_service\_account\_policy\_name | ArgoCD IAM policy name |
+| argocd\_service\_account\_role\_arn | ArgoCD IAM role ARN |
 | aws\_node\_termination\_handler\_metadata | Block status of the deployed AWS Node Termination Handler |
 | cert\_manager\_metadata | Block status of the deployed Cert-Manager |
 | cluster\_autoscaler\_metadata | Block status of the deployed Cluster-Autoscaler |

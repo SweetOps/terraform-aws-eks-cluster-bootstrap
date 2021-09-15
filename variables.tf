@@ -33,7 +33,8 @@ variable "apps_to_install" {
     "falco",
     "falcosidekick",
     "gatekeeper",
-    "github_actions_runners"
+    "github_actions_runners",
+    "linkerd"
   ]
   description = "A list of apps which will be installed"
 }
@@ -593,7 +594,7 @@ variable "tempo" {
   }
 }
 
-variable "linkerd2" {
+variable "linkerd" {
   type = object({
     name              = string
     namespace         = string
@@ -610,8 +611,8 @@ variable "linkerd2" {
   })
 
   default = {
-    name      = "linkerd2"
-    namespace = "linkerd2"
+    name      = "linkerd"
+    namespace = "linkerd"
   }
 }
 variable "descheduler" {

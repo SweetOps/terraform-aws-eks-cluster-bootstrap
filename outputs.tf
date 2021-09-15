@@ -288,7 +288,7 @@ output "argocd_notifications_metadata" {
   description = "Block status of the deployed ArgoCD Notifications"
 }
 
-output "linkerd2_metadata" {
-  value       = local.linkerd2_enabled ? helm_release.linkerd2[0].metadata : null
-  description = "Block status of the deployed Linkerd2"
+output "linkerd_metadata" {
+  value       = local.linkerd_enabled ? helm_release.linkerd[0].metadata : null
+  description = "Block status of the deployed Linkerd"
 }

@@ -593,7 +593,7 @@ variable "tempo" {
   }
 }
 
-variable "linkerd2" {
+variable "linkerd" {
   type = object({
     name              = string
     namespace         = string
@@ -610,8 +610,8 @@ variable "linkerd2" {
   })
 
   default = {
-    name      = "linkerd2"
-    namespace = "linkerd2"
+    name      = "linkerd"
+    namespace = "linkerd"
   }
 }
 variable "descheduler" {

@@ -7,7 +7,7 @@ locals {
     override_values = ""
   }
   node_local_dns = defaults(var.node_local_dns, merge(local.helm_default_params, local.node_local_dns_helm_default_params))
-  node_local_dns_helm_default_values = {
+  node_local_dns_helm_default_values = local.node_local_dns_enabled ? {
     "fullnameOverride" = "${local.node_local_dns["name"]}"
     "Corefile"         = <<-EOT
   cluster.local:53 {
@@ -65,7 +65,7 @@ locals {
         "setupIptables" = true
       }
     }
-  }
+  } : {}
 }
 
 data "utils_deep_merge_yaml" "node_local_dns" {

@@ -332,18 +332,19 @@ variable "velero" {
 
 variable "vault" {
   type = object({
-    name              = string
-    namespace         = string
-    repository        = optional(string)
-    chart             = optional(string)
-    version           = optional(string)
-    override_values   = optional(string)
-    max_history       = optional(number)
-    create_namespace  = optional(bool)
-    dependency_update = optional(bool)
-    reuse_values      = optional(bool)
-    wait              = optional(bool)
-    timeout           = optional(number)
+    name                 = string
+    namespace            = string
+    repository           = optional(string)
+    chart                = optional(string)
+    version              = optional(string)
+    override_values      = optional(string)
+    max_history          = optional(number)
+    create_namespace     = optional(bool)
+    dependency_update    = optional(bool)
+    reuse_values         = optional(bool)
+    wait                 = optional(bool)
+    timeout              = optional(number)
+    create_aws_resources = optional(bool)
   })
 
   default = {

@@ -1,13 +1,18 @@
 ## TODO: implement mTLS
 locals {
-  vault_enabled = module.this.enabled && contains(var.apps_to_install, "vault")
+  vault_enabled              = module.this.enabled && contains(var.apps_to_install, "vault")
+  vault_create_aws_resources = local.vault_enabled && local.vault["create_aws_resources"]
+  vault                      = defaults(var.vault, merge(local.helm_default_params, local.vault_helm_default_params))
+
   vault_helm_default_params = {
-    repository      = "https://helm.releases.hashicorp.com"
-    chart           = "vault"
-    version         = "0.15.0"
-    override_values = ""
+    repository           = "https://helm.releases.hashicorp.com"
+    chart                = "vault"
+    version              = "0.15.0"
+    override_values      = ""
+    create_aws_resources = true
   }
-  vault_helm_default_values = {
+
+  vault_helm_default_values = local.vault_create_aws_resources ? {
     "fullnameOverride" = "${local.vault["name"]}"
     "global" = {
       "enabled" = true
@@ -59,9 +64,7 @@ locals {
         "enabled" = false
       }
     }
-  }
-
-  vault = defaults(var.vault, merge(local.helm_default_params, local.vault_helm_default_params))
+  } : { "fullnameOverride" = "${local.vault["name"]}" }
 }
 
 data "utils_deep_merge_yaml" "vault" {
@@ -77,7 +80,7 @@ module "vault_label" {
   source  = "cloudposse/label/null"
   version = "0.24.1"
 
-  enabled = local.vault_enabled
+  enabled = local.vault_create_aws_resources
   context = module.this.context
 }
 
@@ -119,7 +122,7 @@ module "vault_dynamodb_table" {
 }
 
 data "aws_iam_policy_document" "vault" {
-  count = local.vault_enabled ? 1 : 0
+  count = local.vault_create_aws_resources ? 1 : 0
 
   statement {
     effect = "Allow"

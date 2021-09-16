@@ -12,11 +12,13 @@ locals {
     create_aws_resources = true
   }
 
-  vault_helm_default_values = local.vault_create_aws_resources ? {
+  vault_helm_default_values = local.vault_enabled ? yamlencode({
     "fullnameOverride" = "${local.vault["name"]}"
+
     "global" = {
       "enabled" = true
     }
+
     "injector" = {
       "authPath" = "auth/kubernetes"
       "enabled"  = true
@@ -24,16 +26,20 @@ locals {
         "enabled" = false
       }
     }
+
     "server" = {
       "serviceAccount" = {
         "annotations" = {
           "eks.amazonaws.com/role-arn" = "${module.vault_eks_iam_role.service_account_role_arn}"
         }
       }
+
       "dev" = {
         "enabled" = false
       }
+
       "enabled" = true
+
       "ha" = {
         "apiAddr" = null
         "config"  = <<-EOT
@@ -60,18 +66,19 @@ locals {
         }
         "replicas" = 3
       }
+
       "standalone" = {
         "enabled" = false
       }
     }
-  } : { "fullnameOverride" = "${local.vault["name"]}" }
+  }) : yamlencode({ "fullnameOverride" = "${local.vault["name"]}" })
 }
 
 data "utils_deep_merge_yaml" "vault" {
   count = local.vault_enabled ? 1 : 0
 
   input = [
-    yamlencode(local.vault_helm_default_values),
+    local.vault_helm_default_values,
     local.vault["override_values"]
   ]
 }

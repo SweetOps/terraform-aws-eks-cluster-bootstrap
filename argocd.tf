@@ -9,7 +9,7 @@ locals {
     override_values = ""
   }
 
-  argocd_helm_default_values = local.argocd_enabled ? {
+  argocd_helm_default_values = {
     "fullnameOverride" = local.argocd["name"]
     "controller" = {
       "serviceAccount" = {
@@ -18,7 +18,7 @@ locals {
         }
       }
     }
-  } : {}
+  }
 }
 
 data "utils_deep_merge_yaml" "argocd" {
@@ -36,11 +36,7 @@ data "aws_iam_policy_document" "argocd" {
   statement {
     effect = "Allow"
 
-    condition {
-      test     = "StringLike"
-      variable = "aws:PrincipalArn"
-      values   = ["arn:aws:iam::*:role/*-argocd-deployer"]
-    }
+    resources = ["arn:aws:iam::${local.account_id}:role/*-argocd-deployer"]
 
     actions = [
       "sts:AssumeRole"

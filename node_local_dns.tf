@@ -1,13 +1,15 @@
 locals {
-  node_local_dns_enabled = module.this.enabled && contains(var.apps_to_install, "node_local_dns")
+  node_local_dns_enabled     = module.this.enabled && contains(var.apps_to_install, "node_local_dns")
+  node_local_dns_kube_dns_ip = local.node_local_dns_enabled ? one(data.kubernetes_service.kube_dns[*].spec[0].cluster_ip) : ""
+  node_local_dns             = defaults(var.node_local_dns, merge(local.helm_default_params, local.node_local_dns_helm_default_params))
+
   node_local_dns_helm_default_params = {
     repository      = "https://lablabs.github.io/k8s-nodelocaldns-helm/"
     chart           = "node-local-dns"
     version         = "1.3.2"
     override_values = ""
   }
-  node_local_dns = defaults(var.node_local_dns, merge(local.helm_default_params, local.node_local_dns_helm_default_params))
-  node_local_dns_helm_default_values = local.node_local_dns_enabled ? {
+  node_local_dns_helm_default_values = {
     "fullnameOverride" = "${local.node_local_dns["name"]}"
     "Corefile"         = <<-EOT
   cluster.local:53 {
@@ -18,7 +20,7 @@ locals {
       }
       reload
       loop
-      bind 169.254.20.10 ${one(data.kubernetes_service.kube_dns[*].spec[0].cluster_ip)}
+      bind 169.254.20.10 ${local.node_local_dns_kube_dns_ip}
       forward . __PILLAR__CLUSTER__DNS__ {
               force_tcp
       }
@@ -30,7 +32,7 @@ locals {
       cache 30
       reload
       loop
-      bind 169.254.20.10 ${one(data.kubernetes_service.kube_dns[*].spec[0].cluster_ip)}
+      bind 169.254.20.10 ${local.node_local_dns_kube_dns_ip}
       forward . __PILLAR__CLUSTER__DNS__ {
               force_tcp
       }
@@ -41,7 +43,7 @@ locals {
       cache 30
       reload
       loop
-      bind 169.254.20.10 ${one(data.kubernetes_service.kube_dns[*].spec[0].cluster_ip)}
+      bind 169.254.20.10 ${local.node_local_dns_kube_dns_ip}
       forward . __PILLAR__CLUSTER__DNS__ {
               force_tcp
       }
@@ -52,7 +54,7 @@ locals {
       cache 30
       reload
       loop
-      bind 169.254.20.10 ${one(data.kubernetes_service.kube_dns[*].spec[0].cluster_ip)}
+      bind 169.254.20.10 ${local.node_local_dns_kube_dns_ip}
       forward . __PILLAR__UPSTREAM__SERVERS__
       prometheus :9253
       }
@@ -65,7 +67,7 @@ locals {
         "setupIptables" = true
       }
     }
-  } : {}
+  }
 }
 
 data "utils_deep_merge_yaml" "node_local_dns" {

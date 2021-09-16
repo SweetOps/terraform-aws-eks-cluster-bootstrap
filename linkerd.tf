@@ -12,7 +12,7 @@ locals {
     override_values = ""
   }
 
-  linkerd_helm_default_values = local.linkerd_enabled ? {
+  linkerd_helm_default_values = {
     "fullnameOverride"        = local.linkerd["name"]
     "installNamespace"        = false
     "identityTrustAnchorsPEM" = local.linkerd_identity_certificate_ca
@@ -32,7 +32,7 @@ locals {
       "caBundle"       = local.linkerd_webhook_certificate_ca
       "externalSecret" = true
     }
-  } : {}
+  }
 }
 
 data "utils_deep_merge_yaml" "linkerd" {

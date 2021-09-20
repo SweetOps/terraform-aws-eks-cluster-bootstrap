@@ -91,13 +91,16 @@ NOTE: This module is under heavy development.
 | argo\_events\_metadata | Block status of the deployed Argo Events |
 | argo\_rollouts\_metadata | Block status of the deployed Argo Rollouts |
 | argo\_workflows\_metadata | Block status of the deployed Argo Workflows |
+| argocd\_application\_controller\_service\_account\_policy\_id | ArgoCD application-controller IAM policy ID |
+| argocd\_application\_controller\_service\_account\_policy\_name | ArgoCD application-controller IAM policy name |
+| argocd\_application\_controller\_service\_account\_role\_arn | ArgoCD application-controller IAM role ARN |
 | argocd\_applicationset\_metadata | Block status of the deployed ArgoCD ApplicationSet |
 | argocd\_image\_updater\_metadata | Block status of the deployed ArgoCD Image Updater |
 | argocd\_metadata | Block status of the deployed ArgoCD |
 | argocd\_notifications\_metadata | Block status of the deployed ArgoCD Notifications |
-| argocd\_service\_account\_policy\_id | ArgoCD IAM policy ID |
-| argocd\_service\_account\_policy\_name | ArgoCD IAM policy name |
-| argocd\_service\_account\_role\_arn | ArgoCD IAM role ARN |
+| argocd\_server\_service\_account\_policy\_id | ArgoCD server IAM policy ID |
+| argocd\_server\_service\_account\_policy\_name | ArgoCD server IAM policy name |
+| argocd\_server\_service\_account\_role\_arn | ArgoCD server IAM role ARN |
 | aws\_node\_termination\_handler\_metadata | Block status of the deployed AWS Node Termination Handler |
 | cert\_manager\_metadata | Block status of the deployed Cert-Manager |
 | cluster\_autoscaler\_metadata | Block status of the deployed Cluster-Autoscaler |

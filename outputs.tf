@@ -273,19 +273,34 @@ output "argocd_metadata" {
   description = "Block status of the deployed ArgoCD"
 }
 
-output "argocd_service_account_role_arn" {
-  value       = module.argocd_eks_iam_role.service_account_role_arn
-  description = "ArgoCD IAM role ARN"
+output "argocd_server_service_account_role_arn" {
+  value       = module.argocd_server_eks_iam_role.service_account_role_arn
+  description = "ArgoCD server IAM role ARN"
 }
 
-output "argocd_service_account_policy_name" {
-  value       = module.argocd_eks_iam_role.service_account_policy_name
-  description = "ArgoCD IAM policy name"
+output "argocd_server_service_account_policy_name" {
+  value       = module.argocd_server_eks_iam_role.service_account_policy_name
+  description = "ArgoCD server IAM policy name"
 }
 
-output "argocd_service_account_policy_id" {
-  value       = module.argocd_eks_iam_role.service_account_policy_id
-  description = "ArgoCD IAM policy ID"
+output "argocd_server_service_account_policy_id" {
+  value       = module.argocd_server_eks_iam_role.service_account_policy_id
+  description = "ArgoCD server IAM policy ID"
+}
+
+output "argocd_application_controller_service_account_role_arn" {
+  value       = module.argocd_application_controller_eks_iam_role.service_account_role_arn
+  description = "ArgoCD application-controller IAM role ARN"
+}
+
+output "argocd_application_controller_service_account_policy_name" {
+  value       = module.argocd_application_controller_eks_iam_role.service_account_policy_name
+  description = "ArgoCD application-controller IAM policy name"
+}
+
+output "argocd_application_controller_service_account_policy_id" {
+  value       = module.argocd_application_controller_eks_iam_role.service_account_policy_id
+  description = "ArgoCD application-controller IAM policy ID"
 }
 
 output "argocd_applicationset_metadata" {

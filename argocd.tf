@@ -71,6 +71,7 @@ module "argocd_server_eks_iam_role" {
   service_account_name        = local.argocd_server_service_account_name
   service_account_namespace   = local.argocd["namespace"]
 
+  enabled = local.argocd_enabled
   context = module.this.context
 }
 
@@ -83,6 +84,7 @@ module "argocd_application_controller_eks_iam_role" {
   service_account_name        = local.argocd_application_controller_service_account_name
   service_account_namespace   = local.argocd["namespace"]
 
+  enabled = local.argocd_enabled
   context = module.this.context
 }
 

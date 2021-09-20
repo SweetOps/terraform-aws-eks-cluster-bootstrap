@@ -3,7 +3,7 @@ locals {
   argo_workflows_helm_default_params = {
     repository      = "https://argoproj.github.io/argo-helm"
     chart           = "argo-workflows"
-    version         = "0.5.0"
+    version         = "0.5.2"
     override_values = ""
   }
   argo_workflows_helm_default_values = {

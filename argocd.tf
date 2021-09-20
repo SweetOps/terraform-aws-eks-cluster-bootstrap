@@ -1,20 +1,38 @@
 locals {
-  argocd_enabled = module.this.enabled && contains(var.apps_to_install, "argocd")
-  argocd         = defaults(var.argocd, merge(local.helm_default_params, local.argocd_helm_default_params))
+  argocd_enabled                                     = module.this.enabled && contains(var.apps_to_install, "argocd")
+  argocd_application_controller_service_account_name = format("%s-application-controller", local.argocd["name"])
+  argocd_server_service_account_name                 = format("%s-server", local.argocd["name"])
+  argocd                                             = defaults(var.argocd, merge(local.helm_default_params, local.argocd_helm_default_params))
 
   argocd_helm_default_params = {
     repository      = "https://argoproj.github.io/argo-helm"
     chart           = "argo-cd"
-    version         = "3.17.7"
+    version         = "3.18.0"
     override_values = ""
   }
 
   argocd_helm_default_values = {
     "fullnameOverride" = local.argocd["name"]
+    "global" = {
+      "securityContext" = {
+        "runAsUser"  = 999
+        "runAsGroup" = 999
+        "fsGroup"    = 999
+      }
+    }
     "controller" = {
       "serviceAccount" = {
+        "name" = local.argocd_application_controller_service_account_name
         "annotations" = {
-          "eks.amazonaws.com/role-arn" = "${module.argocd_eks_iam_role.service_account_role_arn}"
+          "eks.amazonaws.com/role-arn" = module.argocd_application_controller_eks_iam_role.service_account_role_arn
+        }
+      }
+    }
+    "server" = {
+      "serviceAccount" = {
+        "name" = local.argocd_server_service_account_name
+        "annotations" = {
+          "eks.amazonaws.com/role-arn" = module.argocd_server_eks_iam_role.service_account_role_arn
         }
       }
     }
@@ -44,13 +62,25 @@ data "aws_iam_policy_document" "argocd" {
   }
 }
 
-module "argocd_eks_iam_role" {
+module "argocd_server_eks_iam_role" {
   source = "git::https://github.com/SweetOps/terraform-aws-eks-iam-role.git?ref=switch_to_count"
 
   aws_iam_policy_document     = one(data.aws_iam_policy_document.argocd[*].json)
   aws_partition               = local.partition
   eks_cluster_oidc_issuer_url = local.eks_cluster_oidc_issuer_url
-  service_account_name        = format("%s-application-controller", local.argocd["name"])
+  service_account_name        = local.argocd_server_service_account_name
+  service_account_namespace   = local.argocd["namespace"]
+
+  context = module.this.context
+}
+
+module "argocd_application_controller_eks_iam_role" {
+  source = "git::https://github.com/SweetOps/terraform-aws-eks-iam-role.git?ref=switch_to_count"
+
+  aws_iam_policy_document     = one(data.aws_iam_policy_document.argocd[*].json)
+  aws_partition               = local.partition
+  eks_cluster_oidc_issuer_url = local.eks_cluster_oidc_issuer_url
+  service_account_name        = local.argocd_application_controller_service_account_name
   service_account_namespace   = local.argocd["namespace"]
 
   context = module.this.context

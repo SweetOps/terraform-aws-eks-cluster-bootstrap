@@ -19,5 +19,9 @@ terraform {
       source  = "cloudposse/utils"
       version = ">= 0.14.0"
     }
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = ">= 1.11"
+    }
   }
 }

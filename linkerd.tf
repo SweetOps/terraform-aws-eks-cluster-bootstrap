@@ -1,9 +1,7 @@
 locals {
-  linkerd_enabled                 = module.this.enabled && contains(var.apps_to_install, "linkerd")
-  linkerd                         = defaults(var.linkerd, merge(local.helm_default_params, local.linkerd_helm_default_params))
-  linkerd_namespace               = local.linkerd_enabled ? one(kubernetes_namespace.linkerd[*].metadata.0.name) : ""
-  linkerd_webhook_certificate_ca  = local.linkerd_enabled ? base64decode(one(data.kubernetes_secret.linkerd_webhook_certificate_ca[*].data["ca.crt"])) : ""
-  linkerd_identity_certificate_ca = local.linkerd_enabled ? base64decode(one(data.kubernetes_secret.linkerd_identity_certificate_ca[*].data["ca.crt"])) : ""
+  linkerd_enabled   = module.this.enabled && contains(var.apps_to_install, "linkerd")
+  linkerd           = defaults(var.linkerd, merge(local.helm_default_params, local.linkerd_helm_default_params))
+  linkerd_namespace = local.linkerd_enabled ? one(kubernetes_namespace.linkerd[*].metadata.0.name) : ""
 
   linkerd_helm_default_params = {
     repository      = "https://helm.linkerd.io/stable"
@@ -15,7 +13,7 @@ locals {
   linkerd_helm_default_values = {
     "fullnameOverride"        = local.linkerd["name"]
     "installNamespace"        = false
-    "identityTrustAnchorsPEM" = local.linkerd_identity_certificate_ca
+    "identityTrustAnchorsPEM" = one(tls_self_signed_cert.linkerd_root_trust_anchor[*].cert_pem)
 
     "identity" = {
       "issuer" = {
@@ -24,12 +22,12 @@ locals {
     }
 
     "profileValidator" = {
-      "caBundle"       = local.linkerd_webhook_certificate_ca
+      "caBundle"       = one(tls_self_signed_cert.linkerd_webhook_trust_anchor[*].cert_pem)
       "externalSecret" = true
     }
 
     "proxyInjector" = {
-      "caBundle"       = local.linkerd_webhook_certificate_ca
+      "caBundle"       = one(tls_self_signed_cert.linkerd_webhook_trust_anchor[*].cert_pem)
       "externalSecret" = true
     }
   }
@@ -62,27 +60,6 @@ resource "kubernetes_namespace" "linkerd" {
   }
 }
 
-resource "kubernetes_manifest" "linkerd_selfsigned_cluster_issuer" {
-  count = local.linkerd_enabled ? 1 : 0
-
-  manifest = {
-    "apiVersion" = "cert-manager.io/v1"
-    "kind"       = "ClusterIssuer"
-
-    "metadata" = {
-      "name" = "selfsigned-issuer"
-    }
-
-    "spec" = {
-      "selfSigned" = {}
-    }
-  }
-
-  depends_on = [
-    helm_release.cert_manager
-  ]
-}
-
 resource "helm_release" "linkerd" {
   count = local.linkerd_enabled ? 1 : 0
 
@@ -103,6 +80,7 @@ resource "helm_release" "linkerd" {
     helm_release.calico,
     helm_release.node_local_dns,
     helm_release.cert_manager,
-    helm_release.kube_prometheus_stack
+    helm_release.kube_prometheus_stack,
+    kubectl_manifest.linkerd_identity_certificate
   ]
 }

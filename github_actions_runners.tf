@@ -12,7 +12,6 @@ locals {
   github_actions_runners_helm_default_values = {
     "fullnameOverride" = "${local.github_actions_runners["name"]}"
   }
-
 }
 
 data "utils_deep_merge_yaml" "github_actions_runners" {

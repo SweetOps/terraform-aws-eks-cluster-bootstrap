@@ -40,4 +40,8 @@ resource "kubernetes_secret" "linkerd_root_trust_anchor" {
     "tls.crt" = one(tls_self_signed_cert.linkerd_root_trust_anchor[*].cert_pem)
     "tls.key" = one(tls_private_key.linkerd_root_trust_anchor[*].private_key_pem)
   }
+
+  depends_on = [
+    helm_release.cert_manager
+  ]
 }

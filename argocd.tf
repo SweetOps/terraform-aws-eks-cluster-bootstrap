@@ -108,6 +108,7 @@ resource "helm_release" "argocd" {
     helm_release.calico,
     helm_release.node_local_dns,
     helm_release.kube_prometheus_stack,
-    helm_release.ingress_nginx
+    helm_release.ingress_nginx,
+    helm_release.cluster_autoscaler
   ]
 }

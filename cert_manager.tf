@@ -59,7 +59,8 @@ resource "helm_release" "cert_manager" {
   depends_on = [
     helm_release.calico,
     helm_release.kube_prometheus_stack,
-    helm_release.node_local_dns
+    helm_release.node_local_dns,
+    helm_release.cluster_autoscaler
   ]
 }
 

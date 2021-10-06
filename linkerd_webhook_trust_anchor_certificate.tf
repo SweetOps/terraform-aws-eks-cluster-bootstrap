@@ -37,7 +37,7 @@ resource "kubernetes_secret" "linkerd_webhook_trust_anchor" {
   type = "kubernetes.io/tls"
 
   data = {
-    "ca.crt" = one(tls_self_signed_cert.linkerd_webhook_trust_anchor[*].cert_pem)
-    "ca.key" = one(tls_private_key.linkerd_webhook_trust_anchor[*].private_key_pem)
+    "tls.crt" = one(tls_self_signed_cert.linkerd_webhook_trust_anchor[*].cert_pem)
+    "tls.key" = one(tls_private_key.linkerd_webhook_trust_anchor[*].private_key_pem)
   }
 }

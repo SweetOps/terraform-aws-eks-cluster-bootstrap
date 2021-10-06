@@ -12,7 +12,7 @@ locals {
     create_aws_resources = true
   }
 
-  vault_helm_default_values = local.vault_enabled ? yamlencode({
+  vault_helm_default_values = local.vault_enabled && local.vault_create_aws_resources ? yamlencode({
     "fullnameOverride" = "${local.vault["name"]}"
 
     "global" = {
@@ -206,6 +206,7 @@ resource "helm_release" "vault" {
     helm_release.calico,
     helm_release.kube_prometheus_stack,
     helm_release.node_local_dns,
-    helm_release.ingress_nginx
+    helm_release.ingress_nginx,
+    helm_release.cluster_autoscaler
   ]
 }

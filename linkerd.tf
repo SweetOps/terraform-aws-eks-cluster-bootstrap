@@ -6,7 +6,7 @@ locals {
   linkerd_helm_default_params = {
     repository      = "https://helm.linkerd.io/stable"
     chart           = "linkerd2"
-    version         = "2.10.2"
+    version         = "2.11.0"
     override_values = ""
   }
 
@@ -81,6 +81,7 @@ resource "helm_release" "linkerd" {
     helm_release.node_local_dns,
     helm_release.cert_manager,
     helm_release.kube_prometheus_stack,
-    kubectl_manifest.linkerd_identity_certificate
+    kubectl_manifest.linkerd_identity_certificate,
+    helm_release.cluster_autoscaler
   ]
 }

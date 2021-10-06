@@ -6,7 +6,7 @@ locals {
   linkerd_jaeger_helm_default_params = {
     repository      = "https://helm.linkerd.io/stable"
     chart           = "linkerd-jaeger"
-    version         = "2.10.2"
+    version         = "2.11.0"
     override_values = ""
   }
 
@@ -59,5 +59,6 @@ resource "helm_release" "linkerd_jaeger" {
     helm_release.node_local_dns,
     helm_release.cert_manager,
     kubectl_manifest.linkerd_jaeger_injector_certificate,
+    helm_release.linkerd
   ]
 }

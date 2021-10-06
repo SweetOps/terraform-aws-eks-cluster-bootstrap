@@ -6,7 +6,7 @@ locals {
   linkerd_viz_helm_default_params = {
     repository      = "https://helm.linkerd.io/stable"
     chart           = "linkerd-viz"
-    version         = "2.10.2"
+    version         = "2.11.0"
     override_values = ""
   }
 
@@ -64,6 +64,7 @@ resource "helm_release" "linkerd_viz" {
     helm_release.node_local_dns,
     helm_release.cert_manager,
     kubectl_manifest.linkerd_viz_tap_certificate,
-    kubectl_manifest.linkerd_viz_tap_injector_certificate
+    kubectl_manifest.linkerd_viz_tap_injector_certificate,
+    helm_release.linkerd
   ]
 }

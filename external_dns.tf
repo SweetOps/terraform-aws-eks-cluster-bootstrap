@@ -41,6 +41,7 @@ resource "helm_release" "external_dns" {
   depends_on = [
     helm_release.calico,
     helm_release.node_local_dns,
-    helm_release.kube_prometheus_stack
+    helm_release.kube_prometheus_stack,
+    helm_release.cluster_autoscaler
   ]
 }

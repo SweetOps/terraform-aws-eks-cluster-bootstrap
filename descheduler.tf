@@ -39,6 +39,7 @@ resource "helm_release" "descheduler" {
 
   depends_on = [
     helm_release.calico,
-    helm_release.node_local_dns
+    helm_release.node_local_dns,
+    helm_release.cluster_autoscaler
   ]
 }

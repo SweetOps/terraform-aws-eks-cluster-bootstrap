@@ -3,7 +3,7 @@ locals {
   calico_helm_default_params = {
     repository      = "https://aws.github.io/eks-charts"
     chart           = "aws-calico"
-    version         = "0.3.7"
+    version         = "0.3.8"
     override_values = ""
   }
   calico_helm_default_values = {

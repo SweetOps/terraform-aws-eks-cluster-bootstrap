@@ -62,7 +62,8 @@ data "aws_iam_policy_document" "cluster_autoscaler" {
 }
 
 module "cluster_autoscaler_eks_iam_role" {
-  source = "git::https://github.com/SweetOps/terraform-aws-eks-iam-role.git?ref=switch_to_count"
+  source  = "rallyware/eks-iam-role/aws"
+  version = "0.1.0"
 
   aws_iam_policy_document     = one(data.aws_iam_policy_document.cluster_autoscaler[*].json)
   aws_partition               = local.partition

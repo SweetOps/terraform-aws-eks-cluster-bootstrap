@@ -179,7 +179,6 @@ module "vault_eks_iam_role" {
   version = "0.1.0"
 
   aws_iam_policy_document     = one(data.aws_iam_policy_document.vault[*].json)
-  aws_partition               = local.partition
   eks_cluster_oidc_issuer_url = local.eks_cluster_oidc_issuer_url
   service_account_name        = local.vault["name"]
   service_account_namespace   = local.vault["namespace"]

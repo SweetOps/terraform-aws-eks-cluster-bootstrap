@@ -1,4 +1,4 @@
-locals = {
+locals {
   prometheus_operator_crds_enabled = local.victoria_metrics_enabled
   prometheus_operator_crd_urls     = local.prometheus_operator_crds_enabled ? { for url in var.prometheus_operator_crd_urls : uuidv5("url", url) => url } : {}
 }

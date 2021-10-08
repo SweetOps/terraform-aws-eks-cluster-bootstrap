@@ -64,6 +64,7 @@ resource "helm_release" "node_problem_detector" {
   depends_on = [
     helm_release.calico,
     helm_release.node_local_dns,
-    helm_release.kube_prometheus_stack
+    helm_release.kube_prometheus_stack,
+    kubectl_manifest.prometheus_operator_crds
   ]
 }

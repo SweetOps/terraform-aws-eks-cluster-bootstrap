@@ -64,7 +64,7 @@ data "aws_iam_policy_document" "argocd" {
 
 module "argocd_server_eks_iam_role" {
   source  = "rallyware/eks-iam-role/aws"
-  version = "0.1.0"
+  version = "0.1.1"
 
   aws_iam_policy_document     = one(data.aws_iam_policy_document.argocd[*].json)
   eks_cluster_oidc_issuer_url = local.eks_cluster_oidc_issuer_url
@@ -77,7 +77,7 @@ module "argocd_server_eks_iam_role" {
 
 module "argocd_application_controller_eks_iam_role" {
   source  = "rallyware/eks-iam-role/aws"
-  version = "0.1.0"
+  version = "0.1.1"
 
   aws_iam_policy_document     = one(data.aws_iam_policy_document.argocd[*].json)
   eks_cluster_oidc_issuer_url = local.eks_cluster_oidc_issuer_url
@@ -105,10 +105,6 @@ resource "helm_release" "argocd" {
   values            = [one(data.utils_deep_merge_yaml.argocd[*].output)]
 
   depends_on = [
-    helm_release.calico,
-    helm_release.node_local_dns,
-    helm_release.kube_prometheus_stack,
-    helm_release.ingress_nginx,
-    helm_release.cluster_autoscaler
+    local.default_depends_on
   ]
 }

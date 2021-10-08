@@ -15,6 +15,7 @@ NOTE: This module is under heavy development.
 | terraform | >= 1.0 |
 | aws | >= 3.0 |
 | helm | >= 2 |
+| http | >= 2.1 |
 | kubectl | >= 1.11 |
 | kubernetes | >= 2.5 |
 | utils | >= 0.14.0 |
@@ -25,6 +26,7 @@ NOTE: This module is under heavy development.
 |------|---------|
 | aws | >= 3.0 |
 | helm | >= 2 |
+| http | >= 2.1 |
 | kubectl | >= 1.11 |
 | kubernetes | >= 2.5 |
 | tls | n/a |
@@ -82,6 +84,7 @@ NOTE: This module is under heavy development.
 | postgres\_operator | n/a | <pre>object({<br>    name              = string<br>    namespace         = string<br>    repository        = optional(string)<br>    chart             = optional(string)<br>    version           = optional(string)<br>    override_values   = optional(string)<br>    max_history       = optional(number)<br>    create_namespace  = optional(bool)<br>    dependency_update = optional(bool)<br>    reuse_values      = optional(bool)<br>    wait              = optional(bool)<br>    timeout           = optional(number)<br>  })</pre> | <pre>{<br>  "name": "postgres-operator",<br>  "namespace": "infra"<br>}</pre> | no |
 | postgres\_operator\_ui | n/a | <pre>object({<br>    name              = string<br>    namespace         = string<br>    repository        = optional(string)<br>    chart             = optional(string)<br>    version           = optional(string)<br>    override_values   = optional(string)<br>    max_history       = optional(number)<br>    create_namespace  = optional(bool)<br>    dependency_update = optional(bool)<br>    reuse_values      = optional(bool)<br>    wait              = optional(bool)<br>    timeout           = optional(number)<br>  })</pre> | <pre>{<br>  "name": "postgres-operator-ui",<br>  "namespace": "infra"<br>}</pre> | no |
 | prometheus\_blackbox\_exporter | n/a | <pre>object({<br>    name              = string<br>    namespace         = string<br>    repository        = optional(string)<br>    chart             = optional(string)<br>    version           = optional(string)<br>    override_values   = optional(string)<br>    max_history       = optional(number)<br>    create_namespace  = optional(bool)<br>    dependency_update = optional(bool)<br>    reuse_values      = optional(bool)<br>    wait              = optional(bool)<br>    timeout           = optional(number)<br>  })</pre> | <pre>{<br>  "name": "prometheus-blackbox-exporter",<br>  "namespace": "monitoring"<br>}</pre> | no |
+| prometheus\_operator\_crd\_urls | A list of prometheus-operator urls to CRD manifests for `kubectl apply`. Required for `VictoriaMetrics` provisioning. | `list(string)` | <pre>[<br>  "https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.50.0/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagerconfigs.yaml",<br>  "https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.50.0/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml",<br>  "https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.50.0/example/prometheus-operator-crd/monitoring.coreos.com_probes.yaml",<br>  "https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.50.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheuses.yaml",<br>  "https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.50.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheusrules.yaml",<br>  "https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.50.0/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml",<br>  "https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.50.0/example/prometheus-operator-crd/monitoring.coreos.com_thanosrulers.yaml"<br>]</pre> | no |
 | regex\_replace\_chars | Regex to replace chars with empty string in `namespace`, `environment`, `stage` and `name`.<br>If not set, `"/[^a-zA-Z0-9-]/"` is used to remove all characters other than hyphens, letters and digits. | `string` | `null` | no |
 | sentry | n/a | <pre>object({<br>    name              = string<br>    namespace         = string<br>    repository        = optional(string)<br>    chart             = optional(string)<br>    version           = optional(string)<br>    override_values   = optional(string)<br>    max_history       = optional(number)<br>    create_namespace  = optional(bool)<br>    dependency_update = optional(bool)<br>    reuse_values      = optional(bool)<br>    wait              = optional(bool)<br>    timeout           = optional(number)<br>  })</pre> | <pre>{<br>  "name": "sentry",<br>  "namespace": "sentry"<br>}</pre> | no |
 | stage | Stage, e.g. 'prod', 'staging', 'dev', OR 'source', 'build', 'test', 'deploy', 'release' | `string` | `null` | no |

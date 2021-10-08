@@ -60,7 +60,8 @@ resource "helm_release" "cert_manager" {
     helm_release.calico,
     helm_release.kube_prometheus_stack,
     helm_release.node_local_dns,
-    helm_release.cluster_autoscaler
+    helm_release.cluster_autoscaler,
+    kubectl_manifest.prometheus_operator_crds
   ]
 }
 

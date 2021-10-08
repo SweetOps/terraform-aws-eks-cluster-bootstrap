@@ -82,6 +82,7 @@ resource "helm_release" "linkerd" {
     helm_release.cert_manager,
     helm_release.kube_prometheus_stack,
     kubectl_manifest.linkerd_identity_certificate,
-    helm_release.cluster_autoscaler
+    helm_release.cluster_autoscaler,
+    kubectl_manifest.prometheus_operator_crds
   ]
 }

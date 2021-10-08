@@ -3,7 +3,7 @@ locals {
   kube_prometheus_stack_helm_default_params = {
     repository      = "https://prometheus-community.github.io/helm-charts"
     chart           = "kube-prometheus-stack"
-    version         = "17.2.2"
+    version         = "19.0.2"
     override_values = ""
   }
   kube_prometheus_stack_helm_default_values = {

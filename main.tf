@@ -11,6 +11,15 @@ locals {
   region                      = one(data.aws_region.default[*].name)
   partition                   = one(data.aws_partition.default[*].partition)
   account_id                  = one(data.aws_caller_identity.default[*].account_id)
+
+  default_depends_on = [
+    helm_release.calico,
+    helm_release.kube_prometheus_stack,
+    helm_release.node_local_dns,
+    helm_release.ebs_csi_driver,
+    helm_release.cluster_autoscaler,
+    kubectl_manifest.prometheus_operator_crds
+  ]
 }
 
 data "aws_partition" "default" {

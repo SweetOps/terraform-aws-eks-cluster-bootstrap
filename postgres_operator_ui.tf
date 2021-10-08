@@ -9,7 +9,8 @@ locals {
   postgres_operator_ui_helm_default_values = {
     "fullnameOverride" = local.postgres_operator_ui["name"]
     "envs" = {
-      "operatorApiUrl" = "http://${local.postgres_operator["name"]}:8080"
+      "operatorApiUrl"  = "http://${local.postgres_operator["name"]}:8080"
+      "targetNamespace" = local.postgres_operator["namespace"]
     }
   }
   postgres_operator_ui = defaults(var.postgres_operator_ui, merge(local.helm_default_params, local.postgres_operator_ui_helm_default_params))

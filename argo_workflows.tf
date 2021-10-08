@@ -38,10 +38,6 @@ resource "helm_release" "argo_workflows" {
   values            = [one(data.utils_deep_merge_yaml.argo_workflows[*].output)]
 
   depends_on = [
-    helm_release.calico,
-    helm_release.node_local_dns,
-    helm_release.kube_prometheus_stack,
-    helm_release.ingress_nginx,
-    helm_release.cluster_autoscaler
+    local.default_depends_on
   ]
 }

@@ -62,6 +62,7 @@ resource "helm_release" "linkerd_smi" {
     helm_release.calico,
     helm_release.node_local_dns,
     helm_release.kube_prometheus_stack,
-    helm_release.linkerd
+    helm_release.linkerd,
+    kubectl_manifest.prometheus_operator_crds
   ]
 }

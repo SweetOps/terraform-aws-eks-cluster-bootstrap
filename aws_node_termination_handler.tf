@@ -47,6 +47,7 @@ resource "helm_release" "aws_node_termination_handler" {
 
   depends_on = [
     helm_release.calico,
-    helm_release.kube_prometheus_stack
+    helm_release.kube_prometheus_stack,
+    kubectl_manifest.prometheus_operator_crds
   ]
 }

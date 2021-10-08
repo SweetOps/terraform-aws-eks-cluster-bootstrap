@@ -71,7 +71,7 @@ data "aws_iam_policy_document" "loki" {
 
 module "loki_eks_iam_role" {
   source  = "rallyware/eks-iam-role/aws"
-  version = "0.1.0"
+  version = "0.1.1"
 
   aws_iam_policy_document     = one(data.aws_iam_policy_document.loki[*].json)
   eks_cluster_oidc_issuer_url = local.eks_cluster_oidc_issuer_url
@@ -98,11 +98,6 @@ resource "helm_release" "loki" {
   values            = [one(data.utils_deep_merge_yaml.loki[*].output)]
 
   depends_on = [
-    helm_release.calico,
-    helm_release.kube_prometheus_stack,
-    helm_release.node_local_dns,
-    helm_release.ebs_csi_driver,
-    helm_release.ingress_nginx,
-    helm_release.cluster_autoscaler
+    local.default_depends_on
   ]
 }

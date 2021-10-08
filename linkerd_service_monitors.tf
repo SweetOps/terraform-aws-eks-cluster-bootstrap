@@ -32,7 +32,8 @@ spec:
 YAML
 
   depends_on = [
-    helm_release.kube_prometheus_stack
+    helm_release.kube_prometheus_stack,
+    kubectl_manifest.prometheus_operator_crds
   ]
 }
 
@@ -69,7 +70,8 @@ spec:
 YAML
 
   depends_on = [
-    helm_release.kube_prometheus_stack
+    helm_release.kube_prometheus_stack,
+    kubectl_manifest.prometheus_operator_crds
   ]
 }
 
@@ -106,7 +108,8 @@ spec:
 YAML
 
   depends_on = [
-    helm_release.kube_prometheus_stack
+    helm_release.kube_prometheus_stack,
+    kubectl_manifest.prometheus_operator_crds
   ]
 }
 
@@ -143,7 +146,8 @@ spec:
 YAML
 
   depends_on = [
-    helm_release.kube_prometheus_stack
+    helm_release.kube_prometheus_stack,
+    kubectl_manifest.prometheus_operator_crds
   ]
 }
 
@@ -180,7 +184,8 @@ spec:
 YAML
 
   depends_on = [
-    helm_release.kube_prometheus_stack
+    helm_release.kube_prometheus_stack,
+    kubectl_manifest.prometheus_operator_crds
   ]
 }
 
@@ -217,7 +222,8 @@ spec:
 YAML
 
   depends_on = [
-    helm_release.kube_prometheus_stack
+    helm_release.kube_prometheus_stack,
+    kubectl_manifest.prometheus_operator_crds
   ]
 }
 
@@ -254,7 +260,8 @@ spec:
 YAML
 
   depends_on = [
-    helm_release.kube_prometheus_stack
+    helm_release.kube_prometheus_stack,
+    kubectl_manifest.prometheus_operator_crds
   ]
 }
 
@@ -315,6 +322,7 @@ spec:
 YAML
 
   depends_on = [
-    helm_release.kube_prometheus_stack
+    helm_release.kube_prometheus_stack,
+    kubectl_manifest.prometheus_operator_crds
   ]
 }

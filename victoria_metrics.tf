@@ -38,7 +38,6 @@ resource "helm_release" "victoria_metrics" {
   values            = [one(data.utils_deep_merge_yaml.victoria_metrics[*].output)]
 
   depends_on = [
-    local.default_depends_on,
-    helm_release.ingress_nginx
+    local.default_depends_on
   ]
 }

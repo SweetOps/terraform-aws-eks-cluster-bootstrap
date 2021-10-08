@@ -36,4 +36,8 @@ resource "helm_release" "calico" {
   wait              = local.calico["wait"]
   timeout           = local.calico["timeout"]
   values            = [one(data.utils_deep_merge_yaml.calico[*].output)]
+
+  depends_on = [
+    kubectl_manifest.prometheus_operator_crds
+  ]
 }

@@ -18,6 +18,7 @@ locals {
     helm_release.node_local_dns,
     helm_release.ebs_csi_driver,
     helm_release.cluster_autoscaler,
+    helm_release.ingress_nginx,
     kubectl_manifest.prometheus_operator_crds
   ]
 }

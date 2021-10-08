@@ -12,7 +12,7 @@ data "http" "prometheus_operator_crds" {
 resource "kubectl_manifest" "prometheus_operator_crds" {
   for_each = local.prometheus_operator_crd_urls
 
-  yaml_body = yamlencode(data.http.prometheus_operator_crds[each.key].body)
+  yaml_body = data.http.prometheus_operator_crds[each.key].body
   force_new = true
   wait      = true
 }

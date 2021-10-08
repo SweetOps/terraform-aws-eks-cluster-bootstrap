@@ -65,6 +65,7 @@ resource "helm_release" "linkerd_viz" {
     helm_release.cert_manager,
     kubectl_manifest.linkerd_viz_tap_certificate,
     kubectl_manifest.linkerd_viz_tap_injector_certificate,
-    helm_release.linkerd
+    helm_release.linkerd,
+    kubectl_manifest.prometheus_operator_crds
   ]
 }

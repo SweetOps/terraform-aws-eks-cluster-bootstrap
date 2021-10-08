@@ -41,6 +41,7 @@ resource "helm_release" "vertical_pod_autoscaler" {
     helm_release.calico,
     helm_release.node_local_dns,
     helm_release.kube_prometheus_stack,
-    helm_release.cluster_autoscaler
+    helm_release.cluster_autoscaler,
+    kubectl_manifest.prometheus_operator_crds
   ]
 }

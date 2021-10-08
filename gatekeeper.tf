@@ -40,6 +40,7 @@ resource "helm_release" "gatekeeper" {
   depends_on = [
     helm_release.calico,
     helm_release.node_local_dns,
-    helm_release.cluster_autoscaler
+    helm_release.cluster_autoscaler,
+    kubectl_manifest.prometheus_operator_crds
   ]
 }

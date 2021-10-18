@@ -10,55 +10,55 @@ locals {
     override_values = ""
   }
   node_local_dns_helm_default_values = {
-    "fullnameOverride" = "${local.node_local_dns["name"]}"
-    "Corefile"         = <<-EOT
-  cluster.local:53 {
-      errors
-      cache {
-              success 9984 30
-              denial 9984 5
-      }
-      reload
-      loop
-      bind 169.254.20.10 ${local.node_local_dns_kube_dns_ip}
-      forward . __PILLAR__CLUSTER__DNS__ {
-              force_tcp
-      }
-      prometheus :9253
-      health 169.254.20.10:8080
-      }
-  in-addr.arpa:53 {
-      errors
-      cache 30
-      reload
-      loop
-      bind 169.254.20.10 ${local.node_local_dns_kube_dns_ip}
-      forward . __PILLAR__CLUSTER__DNS__ {
-              force_tcp
-      }
-      prometheus :9253
-      }
-  ip6.arpa:53 {
-      errors
-      cache 30
-      reload
-      loop
-      bind 169.254.20.10 ${local.node_local_dns_kube_dns_ip}
-      forward . __PILLAR__CLUSTER__DNS__ {
-              force_tcp
-      }
-      prometheus :9253
-      }
-  .:53 {
-      errors
-      cache 30
-      reload
-      loop
-      bind 169.254.20.10 ${local.node_local_dns_kube_dns_ip}
-      forward . __PILLAR__UPSTREAM__SERVERS__
-      prometheus :9253
-      }
-  EOT
+    "fullnameOverride" = local.node_local_dns["name"]
+    #   "Corefile"         = <<-EOT
+    # cluster.local:53 {
+    #     errors
+    #     cache {
+    #             success 9984 30
+    #             denial 9984 5
+    #     }
+    #     reload
+    #     loop
+    #     bind 169.254.20.10 ${local.node_local_dns_kube_dns_ip}
+    #     forward . __PILLAR__CLUSTER__DNS__ {
+    #             force_tcp
+    #     }
+    #     prometheus :9253
+    #     health 169.254.20.10:8080
+    #     }
+    # in-addr.arpa:53 {
+    #     errors
+    #     cache 30
+    #     reload
+    #     loop
+    #     bind 169.254.20.10 ${local.node_local_dns_kube_dns_ip}
+    #     forward . __PILLAR__CLUSTER__DNS__ {
+    #             force_tcp
+    #     }
+    #     prometheus :9253
+    #     }
+    # ip6.arpa:53 {
+    #     errors
+    #     cache 30
+    #     reload
+    #     loop
+    #     bind 169.254.20.10 ${local.node_local_dns_kube_dns_ip}
+    #     forward . __PILLAR__CLUSTER__DNS__ {
+    #             force_tcp
+    #     }
+    #     prometheus :9253
+    #     }
+    # .:53 {
+    #     errors
+    #     cache 30
+    #     reload
+    #     loop
+    #     bind 169.254.20.10 ${local.node_local_dns_kube_dns_ip}
+    #     forward . __PILLAR__UPSTREAM__SERVERS__
+    #     prometheus :9253
+    #     }
+    # EOT
     "config" = {
       "localDnsIp" = "169.254.20.10"
     }

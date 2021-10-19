@@ -1,73 +1,147 @@
 locals {
-  node_local_dns_enabled     = module.this.enabled && contains(var.apps_to_install, "node_local_dns")
-  node_local_dns_kube_dns_ip = local.node_local_dns_enabled ? one(data.kubernetes_service.kube_dns[*].spec[0].cluster_ip) : ""
-  node_local_dns             = defaults(var.node_local_dns, merge(local.helm_default_params, local.node_local_dns_helm_default_params))
-
+  kube_dns_svc           = "kube-dns"
+  kube_dns_ip            = local.node_local_dns_enabled ? one(data.kubernetes_service.kube_dns[*].spec[0].cluster_ip) : ""
+  node_local_dns_enabled = module.this.enabled && contains(var.apps_to_install, "node_local_dns")
+  node_local_dns         = defaults(var.node_local_dns, merge(local.helm_default_params, local.node_local_dns_helm_default_params))
   node_local_dns_helm_default_params = {
-    repository      = "https://lablabs.github.io/k8s-nodelocaldns-helm/"
+    repository      = "https://sweetops.github.io/helm-charts"
     chart           = "node-local-dns"
-    version         = "1.3.2"
+    version         = "0.1.0"
     override_values = ""
   }
+
   node_local_dns_helm_default_values = {
-    "fullnameOverride" = local.node_local_dns["name"]
-    #   "Corefile"         = <<-EOT
-    # cluster.local:53 {
-    #     errors
-    #     cache {
-    #             success 9984 30
-    #             denial 9984 5
-    #     }
-    #     reload
-    #     loop
-    #     bind 169.254.20.10 ${local.node_local_dns_kube_dns_ip}
-    #     forward . __PILLAR__CLUSTER__DNS__ {
-    #             force_tcp
-    #     }
-    #     prometheus :9253
-    #     health 169.254.20.10:8080
-    #     }
-    # in-addr.arpa:53 {
-    #     errors
-    #     cache 30
-    #     reload
-    #     loop
-    #     bind 169.254.20.10 ${local.node_local_dns_kube_dns_ip}
-    #     forward . __PILLAR__CLUSTER__DNS__ {
-    #             force_tcp
-    #     }
-    #     prometheus :9253
-    #     }
-    # ip6.arpa:53 {
-    #     errors
-    #     cache 30
-    #     reload
-    #     loop
-    #     bind 169.254.20.10 ${local.node_local_dns_kube_dns_ip}
-    #     forward . __PILLAR__CLUSTER__DNS__ {
-    #             force_tcp
-    #     }
-    #     prometheus :9253
-    #     }
-    # .:53 {
-    #     errors
-    #     cache 30
-    #     reload
-    #     loop
-    #     bind 169.254.20.10 ${local.node_local_dns_kube_dns_ip}
-    #     forward . __PILLAR__UPSTREAM__SERVERS__
-    #     prometheus :9253
-    #     }
-    # EOT
     "config" = {
       "localDnsIp" = "169.254.20.10"
+      "kubeDnsIp"  = local.kube_dns_ip
+      "zones" = [
+        {
+          "plugins" = {
+            "cache" = {
+              "denial" = {
+                "size" = 0
+                "ttl"  = 1
+              }
+              "parameters"  = 30
+              "prefetch"    = {}
+              "serve_stale" = false
+              "success" = {
+                "size" = 9984
+                "ttl"  = 30
+              }
+            }
+            "debug"  = false
+            "errors" = true
+            "forward" = {
+              "expire"       = ""
+              "force_tcp"    = false
+              "health_check" = ""
+              "max_fails"    = ""
+              "parameters"   = "__PILLAR__CLUSTER__DNS__"
+              "policy"       = ""
+              "prefer_udp"   = false
+            }
+            "health" = {
+              "port" = 8080
+            }
+            "log" = {
+              "classes" = "all"
+              "format"  = "combined"
+            }
+            "prometheus" = true
+            "reload"     = true
+          }
+          "zone" = "cluster.local:53"
+        },
+        {
+          "plugins" = {
+            "cache" = {
+              "parameters" = 30
+            }
+            "debug"  = false
+            "errors" = true
+            "forward" = {
+              "force_tcp"  = false
+              "parameters" = "__PILLAR__CLUSTER__DNS__"
+            }
+            "health" = {
+              "port" = 8080
+            }
+            "log" = {
+              "classes" = "all"
+              "format"  = "combined"
+            }
+            "prometheus" = true
+            "reload"     = true
+          }
+          "zone" = "ip6.arpa:53"
+        },
+        {
+          "plugins" = {
+            "cache" = {
+              "parameters" = 30
+            }
+            "debug"  = false
+            "errors" = true
+            "forward" = {
+              "force_tcp"  = false
+              "parameters" = "__PILLAR__CLUSTER__DNS__"
+            }
+            "health" = {
+              "port" = 8080
+            }
+            "log" = {
+              "classes" = "all"
+              "format"  = "combined"
+            }
+            "prometheus" = true
+            "reload"     = true
+          }
+          "zone" = "in-addr.arpa:53"
+        },
+        {
+          "plugins" = {
+            "cache" = {
+              "parameters"  = 30
+              "serve_stale" = false
+            }
+            "debug"  = false
+            "errors" = true
+            "forward" = {
+              "expire"       = ""
+              "force_tcp"    = false
+              "health_check" = ""
+              "max_fails"    = ""
+              "parameters"   = "__PILLAR__UPSTREAM__SERVERS__"
+              "policy"       = ""
+              "prefer_udp"   = false
+            }
+            "health" = {
+              "port" = 8080
+            }
+            "log" = {
+              "classes" = "all"
+              "format"  = "combined"
+            }
+            "prometheus" = true
+            "reload"     = true
+          }
+          "zone" = ".:53"
+        },
+      ]
     }
+    "fullnameOverride" = local.node_local_dns["name"]
     "image" = {
       "args" = {
         "setupIptables" = true
+        "skipTeardown"  = false
       }
     }
+    "serviceMonitor" = {
+      "enabled" = true
+    }
   }
+
 }
 
 data "utils_deep_merge_yaml" "node_local_dns" {
@@ -83,7 +157,7 @@ data "kubernetes_service" "kube_dns" {
   count = local.node_local_dns_enabled ? 1 : 0
 
   metadata {
-    name      = "kube-dns"
+    name      = local.kube_dns_svc
     namespace = "kube-system"
   }
 }

@@ -1,13 +1,16 @@
 locals {
   calico_enabled = module.this.enabled && contains(var.apps_to_install, "calico")
   calico_helm_default_params = {
-    repository      = "https://aws.github.io/eks-charts"
-    chart           = "aws-calico"
-    version         = "0.3.8"
+    repository      = "https://docs.projectcalico.org/charts"
+    chart           = "tigera-operator"
+    version         = "v3.20.2"
     override_values = ""
   }
   calico_helm_default_values = {
     "fullnameOverride" = "${local.calico["name"]}"
+    "installation" = {
+      "kubernetesProvider" = "EKS"
+    }
   }
   calico = defaults(var.calico, merge(local.helm_default_params, local.calico_helm_default_params))
 }

@@ -960,3 +960,25 @@ variable "imgproxy" {
     namespace = "imgproxy"
   }
 }
+
+variable "chartmuseum" {
+  type = object({
+    name              = string
+    namespace         = string
+    repository        = optional(string)
+    chart             = optional(string)
+    version           = optional(string)
+    override_values   = optional(string)
+    max_history       = optional(number)
+    create_namespace  = optional(bool)
+    dependency_update = optional(bool)
+    reuse_values      = optional(bool)
+    wait              = optional(bool)
+    timeout           = optional(number)
+  })
+
+  default = {
+    name      = "chartmuseum"
+    namespace = "infra"
+  }
+}

@@ -322,3 +322,38 @@ output "linkerd_metadata" {
   value       = local.linkerd_enabled ? helm_release.linkerd[0].metadata : null
   description = "Block status of the deployed Linkerd"
 }
+
+output "chartmuseum_metadata" {
+  value       = local.chartmuseum_enabled ? helm_release.chartmuseum[0].metadata : null
+  description = "Block status of the deployed Chartmuseum"
+}
+
+output "chartmuseum_service_account_role_name" {
+  value       = module.chartmuseum_eks_iam_role.service_account_role_name
+  description = "Chartmuseum IAM role name"
+}
+
+output "chartmuseum_service_account_role_unique_id" {
+  value       = module.chartmuseum_eks_iam_role.service_account_role_unique_id
+  description = "Chartmuseum IAM role unique ID"
+}
+
+output "chartmuseum_service_account_role_arn" {
+  value       = module.chartmuseum_eks_iam_role.service_account_role_arn
+  description = "Chartmuseum IAM role ARN"
+}
+
+output "chartmuseum_service_account_policy_name" {
+  value       = module.chartmuseum_eks_iam_role.service_account_policy_name
+  description = "Chartmuseum IAM policy name"
+}
+
+output "chartmuseum_service_account_policy_id" {
+  value       = module.chartmuseum_eks_iam_role.service_account_policy_id
+  description = "Chartmuseum IAM policy ID"
+}
+
+output "chartmuseum_bucket_id" {
+  value       = module.chartmuseum_s3_bucket.bucket_id
+  description = "Chartmuseum S3 bucket name"
+}

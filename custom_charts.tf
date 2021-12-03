@@ -10,9 +10,10 @@ locals {
     repository_password = ""
   }
 }
+
 resource "helm_release" "custom_charts" {
   for_each = { for chart in var.custom_charts :
-    format("%s-%s-%s-%s", chart.name, chart.namespace, chart.chart, chart.version) => defaults(chart, local.custom_charts_helm_default_params)
+    format("%s-%s-%s", chart.name, chart.namespace, chart.chart) => defaults(chart, local.custom_charts_helm_default_params)
   }
 
   name                = each.value.name

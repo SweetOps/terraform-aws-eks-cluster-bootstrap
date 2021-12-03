@@ -982,3 +982,24 @@ variable "chartmuseum" {
     namespace = "infra"
   }
 }
+
+variable "custom_charts" {
+  type = list(object({
+    name                = string
+    namespace           = string
+    repository          = string
+    chart               = string
+    version             = string
+    values              = optional(string)
+    repository_username = optional(string)
+    repository_password = optional(string)
+    max_history         = optional(number)
+    create_namespace    = optional(bool)
+    dependency_update   = optional(bool)
+    reuse_values        = optional(bool)
+    wait                = optional(bool)
+    timeout             = optional(number)
+  }))
+
+  default = []
+}

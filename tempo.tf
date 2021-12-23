@@ -1,18 +1,39 @@
-## TODO: implement mTLS
 locals {
   tempo_enabled = module.this.enabled && contains(var.apps_to_install, "tempo")
+
   tempo_helm_default_params = {
     repository      = "https://grafana.github.io/helm-charts"
     chart           = "tempo-distributed"
-    version         = "0.9.13"
+    version         = "0.12.2"
     override_values = ""
   }
+
   tempo_helm_default_values = {
-    "fullnameOverride" = "${local.tempo["name"]}"
+    "fullnameOverride" = local.tempo["name"]
     "serviceAccount" = {
       "annotations" = {
-        "eks.amazonaws.com/role-arn" = "${module.tempo_eks_iam_role.service_account_role_arn}"
+        "eks.amazonaws.com/role-arn" = module.tempo_eks_iam_role.service_account_role_arn
       }
+    }
+
+    "storage" = {
+      "trace" = {
+        "backend" = "s3"
+        "s3" = {
+          "bucket"   = module.tempo_s3_bucket.bucket_id
+          "endpoint" = trimprefix(module.tempo_s3_bucket.bucket_regional_domain_name, "${module.tempo_s3_bucket.bucket_id}.")
+        }
+      }
+    }
+
+    "memcachedExporter" = {
+      "enabled" = true
+    }
+
+    "serviceMonitor" = {
+      "enabled"       = true
+      "interval"      = "30s"
+      "scrapeTimeout" = "10s"
     }
   }
 
@@ -43,6 +64,32 @@ module "tempo_s3_bucket" {
   acl                = "private"
   user_enabled       = false
   versioning_enabled = false
+  force_destroy      = true
+  sse_algorithm      = "AES256"
+
+  lifecycle_rules = [
+    {
+      enabled = false
+      prefix  = ""
+      tags    = {}
+
+      enable_glacier_transition            = false
+      enable_deeparchive_transition        = false
+      enable_standard_ia_transition        = false
+      enable_current_object_expiration     = false
+      enable_noncurrent_version_expiration = false
+
+      abort_incomplete_multipart_upload_days         = 90
+      noncurrent_version_glacier_transition_days     = 30
+      noncurrent_version_deeparchive_transition_days = 60
+      noncurrent_version_expiration_days             = 90
+
+      standard_transition_days    = 30
+      glacier_transition_days     = 60
+      deeparchive_transition_days = 90
+      expiration_days             = 90
+    }
+  ]
 
   context    = module.tempo_label.context
   attributes = [local.tempo["name"]]

@@ -11,6 +11,7 @@ locals {
   region                      = one(data.aws_region.default[*].name)
   partition                   = one(data.aws_partition.default[*].partition)
   account_id                  = one(data.aws_caller_identity.default[*].account_id)
+  currnet_time_rfc3339        = one(time_static.default[*].rfc3339)
 
   default_depends_on = [
     helm_release.calico,
@@ -38,5 +39,9 @@ data "aws_region" "default" {
 }
 
 data "aws_caller_identity" "default" {
+  count = module.this.enabled ? 1 : 0
+}
+
+resource "time_static" "default" {
   count = module.this.enabled ? 1 : 0
 }

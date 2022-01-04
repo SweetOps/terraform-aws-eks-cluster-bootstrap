@@ -17,7 +17,7 @@ locals {
         chunk_target_size    = 1536000
         chunk_encoding       = "snappy"
         chunk_retain_period  = "1m"
-        max_transfer_retries = 5
+        max_transfer_retries = 0
       }
 
       limits_config = {
@@ -180,7 +180,7 @@ locals {
           storage:
             type: local
             local:
-              directory: /etc/loki/rules
+              directory: /var/loki/rules
           ring:
             kvstore:
               store: memberlist

@@ -668,7 +668,15 @@ variable "loki" {
   default = {
     name      = "loki"
     namespace = "logging"
-    config    = {}
+    config = {
+      ingester      = {}
+      limits_config = {}
+      table_manager = {}
+      query_range   = {}
+      frontend      = {}
+      ruler         = {}
+      compactor     = {}
+    }
   }
 }
 

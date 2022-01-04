@@ -574,24 +574,109 @@ variable "sentry" {
 }
 
 variable "loki" {
-  type = object({
-    name              = string
-    namespace         = string
-    repository        = optional(string)
-    chart             = optional(string)
-    version           = optional(string)
-    override_values   = optional(string)
-    max_history       = optional(number)
-    create_namespace  = optional(bool)
-    dependency_update = optional(bool)
-    reuse_values      = optional(bool)
-    wait              = optional(bool)
-    timeout           = optional(number)
-  })
+  type = object(
+    {
+      name              = string
+      namespace         = string
+      repository        = optional(string)
+      chart             = optional(string)
+      version           = optional(string)
+      override_values   = optional(string)
+      max_history       = optional(number)
+      create_namespace  = optional(bool)
+      dependency_update = optional(bool)
+      reuse_values      = optional(bool)
+      wait              = optional(bool)
+      timeout           = optional(number)
+      config = object(
+        {
+          auth_enabled = optional(bool)
+
+          ingester = object(
+            {
+              replication_factor   = optional(number)
+              max_chunk_age        = optional(string)
+              chunk_idle_period    = optional(string)
+              chunk_block_size     = optional(number)
+              chunk_target_size    = optional(number)
+              chunk_encoding       = optional(string)
+              chunk_retain_period  = optional(string)
+              max_transfer_retries = optional(number)
+            }
+          )
+
+          limits_config = object(
+            {
+              ingestion_rate_mb             = optional(number)
+              ingestion_burst_size_mb       = optional(number)
+              enforce_metric_name           = optional(bool)
+              reject_old_samples            = optional(bool)
+              reject_old_samples_max_age    = optional(string)
+              max_cache_freshness_per_query = optional(string)
+              max_concurrent_tail_requests  = optional(number)
+            }
+          )
+
+          table_manager = object(
+            {
+              retention_deletes_enabled = optional(bool)
+              retention_period          = optional(string)
+              creation_grace_period     = optional(string)
+              poll_interval             = optional(string)
+            }
+          )
+
+          query_range = object(
+            {
+              align_queries_with_step   = optional(bool)
+              max_retries               = optional(number)
+              split_queries_by_interval = optional(string)
+              cache_results             = optional(bool)
+            }
+          )
+
+          frontend = object(
+            {
+              log_queries_longer_than    = optional(string)
+              compress_responses         = optional(bool)
+              max_outstanding_per_tenant = optional(number)
+            }
+          )
+
+          ruler = object(
+            {
+              alertmanager_url = optional(string)
+              external_url     = optional(string)
+            }
+          )
+
+          compactor = object(
+            {
+              compaction_interval           = optional(string)
+              retention_enabled             = optional(bool)
+              retention_delete_delay        = optional(string)
+              retention_delete_worker_count = optional(number)
+              delete_request_cancel_period  = optional(string)
+              max_compaction_parallelism    = optional(number)
+            }
+          )
+        }
+      )
+    }
+  )
 
   default = {
     name      = "loki"
-    namespace = "monitoring"
+    namespace = "logging"
+    config = {
+      ingester      = {}
+      limits_config = {}
+      table_manager = {}
+      query_range   = {}
+      frontend      = {}
+      ruler         = {}
+      compactor     = {}
+    }
   }
 }
 
@@ -613,7 +698,7 @@ variable "tempo" {
 
   default = {
     name      = "tempo"
-    namespace = "monitoring"
+    namespace = "tracing"
   }
 }
 

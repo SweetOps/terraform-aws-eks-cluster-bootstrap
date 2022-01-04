@@ -306,7 +306,7 @@ module "loki_compactor_eks_iam_role" {
 
   aws_iam_policy_document     = one(data.aws_iam_policy_document.loki[*].json)
   eks_cluster_oidc_issuer_url = local.eks_cluster_oidc_issuer_url
-  service_account_name        = fomrat("%s-%s", local.loki["name"], "compactor")
+  service_account_name        = format("%s-%s", local.loki["name"], "compactor")
   service_account_namespace   = local.loki["namespace"]
 
   context = module.loki_label.context

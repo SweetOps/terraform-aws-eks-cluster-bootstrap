@@ -39,7 +39,7 @@ data "utils_deep_merge_yaml" "chartmuseum" {
 
 module "chartmuseum_label" {
   source  = "cloudposse/label/null"
-  version = "0.24.1"
+  version = "0.25.0"
 
   enabled = local.chartmuseum_enabled
   context = module.this.context

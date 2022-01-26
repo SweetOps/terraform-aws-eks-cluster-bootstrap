@@ -65,7 +65,7 @@ locals {
 
 module "velero_label" {
   source  = "cloudposse/label/null"
-  version = "0.24.1"
+  version = "0.25.0"
 
   enabled = local.velero_enabled
   context = module.this.context

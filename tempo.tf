@@ -51,7 +51,7 @@ data "utils_deep_merge_yaml" "tempo" {
 
 module "tempo_label" {
   source  = "cloudposse/label/null"
-  version = "0.24.1"
+  version = "0.25.0"
 
   enabled = local.tempo_enabled
   context = module.this.context

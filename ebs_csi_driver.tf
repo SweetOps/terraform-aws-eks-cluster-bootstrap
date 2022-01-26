@@ -64,7 +64,7 @@ data "utils_deep_merge_yaml" "ebs_csi_driver" {
 
 module "ebs_csi_driver_label" {
   source  = "cloudposse/label/null"
-  version = "0.24.1"
+  version = "0.25.0"
 
   enabled = local.ebs_csi_driver_enabled
   context = module.this.context

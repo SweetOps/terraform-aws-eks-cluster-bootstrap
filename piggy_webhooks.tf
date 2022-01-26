@@ -40,7 +40,7 @@ data "utils_deep_merge_yaml" "piggy_webhooks" {
 
 module "piggy_webhooks_label" {
   source  = "cloudposse/label/null"
-  version = "0.24.1"
+  version = "0.25.0"
 
   enabled = local.piggy_webhooks_enabled
   context = module.this.context

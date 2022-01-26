@@ -85,7 +85,7 @@ data "utils_deep_merge_yaml" "vault" {
 
 module "vault_label" {
   source  = "cloudposse/label/null"
-  version = "0.24.1"
+  version = "0.25.0"
 
   enabled = local.vault_create_aws_resources
   context = module.this.context

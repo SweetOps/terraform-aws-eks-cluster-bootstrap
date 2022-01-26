@@ -2,7 +2,7 @@ locals {
   piggy_webhooks_enabled = module.this.enabled && contains(var.apps_to_install, "piggy_webhooks")
   piggy_webhooks_helm_default_params = {
     repository      = "https://piggysec.com"
-    chart           = "piggy_webhooks"
+    chart           = "piggy-webhooks"
     version         = "0.2.9"
     override_values = ""
   }

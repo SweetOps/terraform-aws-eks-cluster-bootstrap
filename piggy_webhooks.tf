@@ -23,7 +23,7 @@ locals {
     "serviceAccount" = {
       "annotations" = {
         "eks.amazonaws.com/role-arn"               = module.piggy_webhooks_eks_iam_role.service_account_role_arn
-        "eks.amazonaws.com/sts-regional-endpoints" = var.sts_regional_endpoints_enabled
+        "eks.amazonaws.com/sts-regional-endpoints" = tostring(var.sts_regional_endpoints_enabled)
       }
     }
   }

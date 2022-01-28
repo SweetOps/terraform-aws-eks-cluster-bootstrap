@@ -13,7 +13,7 @@ locals {
   }
 
   vault_helm_default_values = local.vault_enabled && local.vault_create_aws_resources ? yamlencode({
-    "fullnameOverride" = "${local.vault["name"]}"
+    "fullnameOverride" = local.vault["name"]
 
     "global" = {
       "enabled" = true
@@ -30,7 +30,8 @@ locals {
     "server" = {
       "serviceAccount" = {
         "annotations" = {
-          "eks.amazonaws.com/role-arn" = "${module.vault_eks_iam_role.service_account_role_arn}"
+          "eks.amazonaws.com/role-arn"               = module.vault_eks_iam_role.service_account_role_arn
+          "eks.amazonaws.com/sts-regional-endpoints" = var.sts_regional_endpoints_enabled
         }
       }
 
@@ -93,7 +94,7 @@ module "vault_label" {
 
 module "vault_kms_key" {
   source  = "cloudposse/kms-key/aws"
-  version = "0.10.0"
+  version = "0.12.1"
 
   description             = format("KMS key for vault on %s", local.eks_cluster_id)
   deletion_window_in_days = 10
@@ -106,7 +107,7 @@ module "vault_kms_key" {
 
 module "vault_dynamodb_table" {
   source  = "cloudposse/dynamodb/aws"
-  version = "0.29.0"
+  version = "0.29.5"
 
   hash_key                      = "Path"
   range_key                     = "Key"

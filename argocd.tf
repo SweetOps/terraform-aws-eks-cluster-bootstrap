@@ -24,7 +24,8 @@ locals {
       "serviceAccount" = {
         "name" = local.argocd_application_controller_service_account_name
         "annotations" = {
-          "eks.amazonaws.com/role-arn" = module.argocd_application_controller_eks_iam_role.service_account_role_arn
+          "eks.amazonaws.com/role-arn"               = module.argocd_application_controller_eks_iam_role.service_account_role_arn
+          "eks.amazonaws.com/sts-regional-endpoints" = var.sts_regional_endpoints_enabled
         }
       }
     }
@@ -32,7 +33,8 @@ locals {
       "serviceAccount" = {
         "name" = local.argocd_server_service_account_name
         "annotations" = {
-          "eks.amazonaws.com/role-arn" = module.argocd_server_eks_iam_role.service_account_role_arn
+          "eks.amazonaws.com/role-arn"               = module.argocd_server_eks_iam_role.service_account_role_arn
+          "eks.amazonaws.com/sts-regional-endpoints" = var.sts_regional_endpoints_enabled
         }
       }
     }

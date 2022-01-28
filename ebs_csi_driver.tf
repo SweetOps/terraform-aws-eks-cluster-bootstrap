@@ -8,11 +8,11 @@ locals {
     override_values = ""
   }
   ebs_csi_driver_helm_default_values = {
-    "fullnameOverride" = "${local.ebs_csi_driver["name"]}"
+    "fullnameOverride" = local.ebs_csi_driver["name"]
     "controller" = {
       "extraCreateMetadata" = true
-      "k8sTagClusterId"     = "${local.eks_cluster_id}"
-      "region"              = "${local.region}"
+      "k8sTagClusterId"     = local.eks_cluster_id
+      "region"              = local.region
       "tolerateAllTaints"   = true
       "updateStrategy" = {
         "rollingUpdate" = {
@@ -23,7 +23,8 @@ locals {
       }
       "serviceAccount" = {
         "annotations" = {
-          "eks.amazonaws.com/role-arn" = "${module.ebs_csi_driver_eks_iam_role.service_account_role_arn}"
+          "eks.amazonaws.com/role-arn"               = module.ebs_csi_driver_eks_iam_role.service_account_role_arn
+          "eks.amazonaws.com/sts-regional-endpoints" = var.sts_regional_endpoints_enabled
         }
       }
     }
@@ -42,7 +43,7 @@ locals {
         "parameters" = {
           "csi.storage.k8s.io/fstype" = "xfs"
           "encrypted"                 = "true"
-          "kmsKeyId"                  = "${module.ebs_csi_driver_kms_key.key_id}"
+          "kmsKeyId"                  = module.ebs_csi_driver_kms_key.key_id
           "type"                      = "gp3"
         }
         "provisioner"       = "ebs.csi.aws.com"
@@ -72,7 +73,7 @@ module "ebs_csi_driver_label" {
 
 module "ebs_csi_driver_kms_key" {
   source  = "cloudposse/kms-key/aws"
-  version = "0.10.0"
+  version = "0.12.1"
 
   description             = format("KMS key for ebs-csi-driver on %s", local.eks_cluster_id)
   deletion_window_in_days = 10

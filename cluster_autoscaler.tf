@@ -8,16 +8,17 @@ locals {
     override_values = ""
   }
   cluster_autoscaler_helm_default_values = {
-    "fullnameOverride" = "${local.cluster_autoscaler["name"]}"
+    "fullnameOverride" = local.cluster_autoscaler["name"]
     "cloudProvider"    = "aws"
-    "awsRegion"        = "${local.region}"
+    "awsRegion"        = local.region
     "autoDiscovery" = {
-      "clusterName" = "${local.eks_cluster_id}"
+      "clusterName" = local.eks_cluster_id
     }
     "rbac" = {
       "serviceAccount" = {
         "annotations" = {
-          "eks.amazonaws.com/role-arn" = "${module.cluster_autoscaler_eks_iam_role.service_account_role_arn}"
+          "eks.amazonaws.com/role-arn"               = module.cluster_autoscaler_eks_iam_role.service_account_role_arn
+          "eks.amazonaws.com/sts-regional-endpoints" = tostring(var.sts_regional_endpoints_enabled)
         }
       }
     }

@@ -12,7 +12,8 @@ locals {
     "fullnameOverride" = local.tempo["name"]
     "serviceAccount" = {
       "annotations" = {
-        "eks.amazonaws.com/role-arn" = module.tempo_eks_iam_role.service_account_role_arn
+        "eks.amazonaws.com/role-arn"               = module.tempo_eks_iam_role.service_account_role_arn
+        "eks.amazonaws.com/sts-regional-endpoints" = tostring(var.sts_regional_endpoints_enabled)
       }
     }
 
@@ -59,7 +60,7 @@ module "tempo_label" {
 
 module "tempo_s3_bucket" {
   source  = "cloudposse/s3-bucket/aws"
-  version = "0.43.0"
+  version = "0.46.0"
 
   acl                = "private"
   user_enabled       = false

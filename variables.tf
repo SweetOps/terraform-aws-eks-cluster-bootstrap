@@ -44,6 +44,12 @@ variable "eks_cluster_id" {
   description = "EKS cluster ID"
 }
 
+variable "sts_regional_endpoints_enabled" {
+  type        = bool
+  default     = false
+  description = "Whether to use STS regional endpoints for service accounts"
+}
+
 variable "cert_manager" {
   type = object({
     name              = string

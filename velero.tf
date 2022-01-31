@@ -10,22 +10,23 @@ locals {
     "fullnameOverride" = "${local.velero["name"]}"
     "serviceAccount" = {
       "annotations" = {
-        "eks.amazonaws.com/role-arn" = "${module.velero_eks_iam_role.service_account_role_arn}"
+        "eks.amazonaws.com/role-arn"               = module.velero_eks_iam_role.service_account_role_arn
+        "eks.amazonaws.com/sts-regional-endpoints" = tostring(var.sts_regional_endpoints_enabled)
       }
     }
     "configuration" = {
       "backupStorageLocation" = {
-        "bucket"   = "${module.velero_s3_bucket.bucket_id}"
+        "bucket"   = module.velero_s3_bucket.bucket_id
         "name"     = "default"
-        "prefix"   = "${format("backups/%s", local.eks_cluster_id)}"
+        "prefix"   = format("backups/%s", local.eks_cluster_id)
         "provider" = "aws"
-        "region"   = "${local.region}"
+        "region"   = local.region
       }
       "provider" = "aws"
       "volumeSnapshotLocation" = {
         "name"     = "default"
         "provider" = "aws"
-        "region"   = "${local.region}"
+        "region"   = local.region
       }
     }
     "initContainers" = [
@@ -73,11 +74,35 @@ module "velero_label" {
 
 module "velero_s3_bucket" {
   source  = "cloudposse/s3-bucket/aws"
-  version = "0.43.0"
+  version = "0.46.0"
 
   acl                = "private"
   user_enabled       = false
   versioning_enabled = false
+
+  lifecycle_rules = [
+    {
+      enabled = false
+      prefix  = ""
+      tags    = {}
+
+      enable_glacier_transition            = false
+      enable_deeparchive_transition        = false
+      enable_standard_ia_transition        = false
+      enable_current_object_expiration     = false
+      enable_noncurrent_version_expiration = false
+
+      abort_incomplete_multipart_upload_days         = 90
+      noncurrent_version_glacier_transition_days     = 30
+      noncurrent_version_deeparchive_transition_days = 60
+      noncurrent_version_expiration_days             = 90
+
+      standard_transition_days    = 30
+      glacier_transition_days     = 60
+      deeparchive_transition_days = 90
+      expiration_days             = 90
+    }
+  ]
 
   context    = module.velero_label.context
   attributes = [local.velero["name"]]

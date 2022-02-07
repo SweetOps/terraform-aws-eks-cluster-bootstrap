@@ -1076,18 +1076,21 @@ variable "chartmuseum" {
 
 variable "piggy_webhooks" {
   type = object({
-    name              = string
-    namespace         = string
-    repository        = optional(string)
-    chart             = optional(string)
-    version           = optional(string)
-    override_values   = optional(string)
-    max_history       = optional(number)
-    create_namespace  = optional(bool)
-    dependency_update = optional(bool)
-    reuse_values      = optional(bool)
-    wait              = optional(bool)
-    timeout           = optional(number)
+    name                      = string
+    namespace                 = string
+    repository                = optional(string)
+    chart                     = optional(string)
+    version                   = optional(string)
+    override_values           = optional(string)
+    max_history               = optional(number)
+    create_namespace          = optional(bool)
+    dependency_update         = optional(bool)
+    reuse_values              = optional(bool)
+    wait                      = optional(bool)
+    timeout                   = optional(number)
+    create_default_iam_policy = optional(bool)
+    create_default_iam_role   = optional(bool)
+    iam_policy_document       = optional(string)
   })
 
   default = {
